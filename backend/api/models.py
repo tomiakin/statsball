@@ -9,3 +9,49 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+class League(models.Model): # add flag goals scored etc etc, date time is also wrong, # add season
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=10, unique=True)  # Unique code for the league (e.g., 'PL' for Premier League)
+    emblem = models.URLField(null=True, blank=True)  # Optional league emblem URL
+
+    def __str__(self):
+        return self.name
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=50, null=True, blank=True)  # Short name for display
+    crest = models.URLField()  # URL for team crest
+
+    def __str__(self):
+        return self.name
+
+
+class TeamParticipation(models.Model):
+    team = models.ForeignKey(Team, related_name='participations', on_delete=models.CASCADE)
+    league = models.ForeignKey(League, related_name='participations', on_delete=models.CASCADE)
+    position = models.IntegerField()
+    playedGames = models.IntegerField()
+    won = models.IntegerField()
+    draw = models.IntegerField()
+    lost = models.IntegerField()
+    points = models.IntegerField()
+    goalDifference = models.IntegerField()
+
+    class Meta:
+        unique_together = ('team', 'league')  # Ensures one participation record per team-league combo
+
+    def __str__(self):
+        return f"{self.team.name} in {self.league.name}"
+
+
+class Standings(models.Model):
+    league = models.ForeignKey(League, related_name='standings', on_delete=models.CASCADE)  # Relation to League
+    season = models.CharField(max_length=100)
+    updated_at = models.DateTimeField(auto_now=True)  # Tracks when standings were last updated
+    teams = models.ManyToManyField(TeamParticipation, related_name='standings')  # Relationship to team participations
+
+    def __str__(self):
+        return f"{self.league.name} Standings for {self.season}"
+
+
