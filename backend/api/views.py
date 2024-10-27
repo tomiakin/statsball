@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Player
-from .serializers import PlayerSerializer
-import requests
-from django.http import JsonResponse
-from decouple import config
+# from django.shortcuts import render
+# from rest_framework.response import Response
+# from rest_framework.decorators import api_view
+# from .models import Player
+# from .serializers import PlayerSerializer
+# import requests
+# from django.http import JsonResponse
+# from decouple import config
 
 # API im using restricts to 10 calls/min but how often do ievn need to make requests? how do i deal witht this, surely i shouldnt be reuesitng evrytime
 # lets say i make a reusts for the table thne i filter by something will it make another request can i save a big fat json file in the mean time?
@@ -21,37 +21,59 @@ from decouple import config
 # my vscide doenst indent the same as prettier help
 
 
-@api_view(['GET'])
-def get_players(request):
-    players = Player.objects.all()
-    serializer = PlayerSerializer(players, many=True)
-    return Response(serializer.data)
+# @api_view(['GET'])
+# def get_players(request):
+#     players = Player.objects.all()
+#     serializer = PlayerSerializer(players, many=True)
+#     return Response(serializer.data)
 
 
-def get_standings(request, standing_type): # initialise standing_type so it has one even for testing
-    api_url = "https://api.football-data.org/v4/competitions/PL/standings"
-    headers = {
-        "X-Auth-Token": config('FOOTBALL_API_KEY')
-    }
-    
-    # Fetch data from football-data API
-    response = requests.get(api_url, headers=headers)
-    
-    if response.status_code == 200:
-        data = response.json()
-        standings_data = []
+# def get_standings(request, standing_type): # initialise standing_type so it has one even for testing
+#     api_url = "https://api.football-data.org/v4/competitions/PL/standings"
+#     headers = {
+#         "X-Auth-Token": config('FOOTBALL_API_KEY')
+#     }
 
-        # Filter relevant standings (Total, Home, Away)
-        for standing in data['standings']:
-            if standing['type'] == standing_type:
-                standings_data = standing['table']
-                break
+#     # Fetch data from football-data API
+#     response = requests.get(api_url, headers=headers)
 
-        return JsonResponse({
-            "competition": data['competition']['name'],
-            "season": data['filters']['season'],
-            "standings": standings_data
-        })
-    
-    return JsonResponse({"error": "Unable to fetch data"}, status=400)
+#     if response.status_code == 200:
+#         data = response.json()
+#         standings_data = []
 
+#         # Filter relevant standings (Total, Home, Away)
+#         for standing in data['standings']:
+#             if standing['type'] == standing_type:
+#                 standings_data = standing['table']
+#                 break
+
+#         return JsonResponse({
+#             "competition": data['competition']['name'],
+#             "season": data['filters']['season'],
+#             "standings": standings_data
+#         })
+
+#     return JsonResponse({"error": "Unable to fetch data"}, status=400)
+
+# api/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from statsbombpy import sb
+import pandas as pd
+
+
+class TouchDataView(APIView):
+    def get(self, request, match_id, player_name):
+        # Fetch match events
+        match_df = sb.events(match_id=match_id)
+
+        # Filter events by player and touch types
+        touches = ['Pass', 'Ball Receipt*', 'Carry', 'Clearance', 'Foul Won', 'Block',
+                   'Ball Recovery', 'Duel', 'Dribble', 'Interception', 'Miscontrol', 'Shot']
+        touches_df = match_df[(match_df['player'] == player_name) & (
+            match_df['type'].isin(touches))]
+
+        # Prepare data to send to frontend
+        touches_data = touches_df[[
+            'type', 'location']].to_dict(orient='records')
+        return Response(touches_data)

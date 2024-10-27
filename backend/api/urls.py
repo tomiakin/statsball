@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import get_players, get_standings
+from .views import TouchDataView
 
 urlpatterns = [
-    path('api/players/', get_players, name='get-players'),
-    path('api/standings/<str:standing_type>/', get_standings, name='get_pl_standings')
+    path('api/touches/<int:match_id>/<str:player_name>/', TouchDataView.as_view(), name='touch-data')
 ]
