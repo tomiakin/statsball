@@ -1,79 +1,146 @@
-# from django.shortcuts import render
-# from rest_framework.response import Response
-# from rest_framework.decorators import api_view
-# from .models import Player
-# from .serializers import PlayerSerializer
-# import requests
-# from django.http import JsonResponse
-# from decouple import config
-
-# API im using restricts to 10 calls/min but how often do ievn need to make requests? how do i deal witht this, surely i shouldnt be reuesitng evrytime
-# lets say i make a reusts for the table thne i filter by something will it make another request can i save a big fat json file in the mean time?
-# this is a featre i want to have, see best form/run during the seaons/ best streaks and alos ofc worst
-# add hsitorical data add ability to view standings on a particualr match day LIKE FILTERING BY MATCHDAY
-# change get standings function to take in a league as a parameter so that yeah it filters
-# i want to filter by matchday and season? so maybe allow it to take in match day which it can then inherit of a class basd view
-# nah but on a real how often are reuqets made? like evrytime the webpage is refreshed or what
-# API im using restricts to 10 calls/min but how often do ievn need to make requests? how do i deal witht this, surely i shouldnt be reuesitng evrytime
-# like ofr example the prmier leageu tbnale chages on average 2/3 times a week so can i choose when to call the table
-
-# make it delte standings of that league after every run do 1 run every 10 mins
-# my vscide doenst indent the same as prettier help
-
-
-# @api_view(['GET'])
-# def get_players(request):
-#     players = Player.objects.all()
-#     serializer = PlayerSerializer(players, many=True)
-#     return Response(serializer.data)
-
-
-# def get_standings(request, standing_type): # initialise standing_type so it has one even for testing
-#     api_url = "https://api.football-data.org/v4/competitions/PL/standings"
-#     headers = {
-#         "X-Auth-Token": config('FOOTBALL_API_KEY')
-#     }
-
-#     # Fetch data from football-data API
-#     response = requests.get(api_url, headers=headers)
-
-#     if response.status_code == 200:
-#         data = response.json()
-#         standings_data = []
-
-#         # Filter relevant standings (Total, Home, Away)
-#         for standing in data['standings']:
-#             if standing['type'] == standing_type:
-#                 standings_data = standing['table']
-#                 break
-
-#         return JsonResponse({
-#             "competition": data['competition']['name'],
-#             "season": data['filters']['season'],
-#             "standings": standings_data
-#         })
-
-#     return JsonResponse({"error": "Unable to fetch data"}, status=400)
-
-# api/views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from statsbombpy import sb
 import pandas as pd
+import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-class TouchDataView(APIView):
+class BaseStatsBombView(APIView):
+    def handle_error(self, error, message="An error occurred"):
+        logger.error(f"{message}: {str(error)}")
+        return Response({
+            'error': str(error),
+            'message': message
+        }, status=500)
+
+    def clean_dataframe(self, df):
+        """Clean DataFrame for JSON serialization"""
+        # Make a copy to avoid modifying the original
+        df = df.copy()
+
+        # Handle the specific columns we know might have issues
+        if 'last_updated_360' in df.columns:
+            df['last_updated_360'] = df['last_updated_360'].replace({
+                                                                    np.nan: None})
+
+        if 'referee' in df.columns:
+            df['referee'] = df['referee'].replace({np.nan: None})
+
+        # Ensure all numeric columns are properly handled
+        for col in df.select_dtypes(include=np.number).columns:
+            df[col] = df[col].replace(
+                {np.nan: None, np.inf: None, -np.inf: None})
+
+        # Convert to dictionary and handle any remaining issues
+        records = df.to_dict(orient='records')
+
+        # Final cleanup to ensure JSON serialization will work
+        clean_records = []
+        for record in records:
+            clean_record = {}
+            for key, value in record.items():
+                # Convert numpy integers to Python integers
+                if isinstance(value, np.integer):
+                    clean_record[key] = int(value)
+                # Convert numpy floats to Python floats or None
+                elif isinstance(value, np.floating):
+                    clean_record[key] = float(
+                        value) if not np.isnan(value) else None
+                # Keep everything else as is
+                else:
+                    clean_record[key] = value
+            clean_records.append(clean_record)
+
+        return clean_records
+
+
+class LeagueMatchesView(BaseStatsBombView):
+    def get(self, request, competition_id, season_id):
+        try:
+            logger.info(
+                f"Fetching matches for competition {competition_id} and season {season_id}")
+
+            # Get matches
+            matches = sb.matches(
+                competition_id=competition_id, season_id=season_id)
+
+            if matches is None or matches.empty:
+                return Response({'error': 'No matches found'}, status=404)
+
+            # Clean and convert to JSON-safe format
+            matches_data = self.clean_dataframe(matches)
+
+            return Response(matches_data)
+
+        except Exception as e:
+            logger.error(f"Error fetching matches: {str(e)}")
+            return self.handle_error(e, "Failed to fetch matches")
+
+
+class CompetitionInfoView(BaseStatsBombView):
+    def get(self, request, competition_id, season_id):
+        try:
+            matches = sb.matches(
+                competition_id=competition_id, season_id=season_id)
+
+            if matches is None or matches.empty:
+                return Response({'error': 'No matches found'}, status=404)
+
+            # Clean the dataframe
+            matches_data = self.clean_dataframe(matches)
+
+            if matches_data:
+                first_match = matches_data[0]
+                return Response({
+                    'competition': first_match.get('competition'),
+                    'season': first_match.get('season'),
+                    'competition_stage': first_match.get('competition_stage')
+                })
+            return Response({'error': 'No matches found'}, status=404)
+
+        except Exception as e:
+            return self.handle_error(e, "Failed to fetch competition info")
+
+
+class CompetitionsView(BaseStatsBombView):
+    def get(self, request):
+        try:
+            competitions = sb.competitions()
+            return Response(competitions.to_dict(orient='records'))
+        except Exception as e:
+            return self.handle_error(e, "Failed to fetch competitions")
+
+
+class SeasonsView(BaseStatsBombView):
+    def get(self, request, competition_id):
+        try:
+            competitions = sb.competitions()
+            seasons = competitions[competitions['competition_id']
+                                   == competition_id]
+            return Response(seasons.to_dict(orient='records'))
+        except Exception as e:
+            return self.handle_error(e, "Failed to fetch seasons")
+
+
+class TouchDataView(BaseStatsBombView):
     def get(self, request, match_id, player_name):
-        # Fetch match events
-        match_df = sb.events(match_id=match_id)
+        try:
+            match_events = sb.events(match_id=match_id)
 
-        # Filter events by player and touch types
-        touches = ['Pass', 'Ball Receipt*', 'Carry', 'Clearance', 'Foul Won', 'Block',
-                   'Ball Recovery', 'Duel', 'Dribble', 'Interception', 'Miscontrol', 'Shot']
-        touches_df = match_df[(match_df['player'] == player_name) & (
-            match_df['type'].isin(touches))]
+            touch_types = [
+                'Pass', 'Ball Receipt*', 'Carry', 'Clearance',
+                'Foul Won', 'Block', 'Ball Recovery', 'Duel',
+                'Dribble', 'Interception', 'Miscontrol', 'Shot'
+            ]
 
-        # Prepare data to send to frontend
-        touches_data = touches_df[[
-            'type', 'location']].to_dict(orient='records')
-        return Response(touches_data)
+            touches = match_events[
+                (match_events['player'] == player_name) &
+                (match_events['type'].isin(touch_types))
+            ]
+
+            return Response(touches[['type', 'location']].to_dict(orient='records'))
+        except Exception as e:
+            return self.handle_error(e, "Failed to fetch touch data")
