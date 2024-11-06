@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Row,
@@ -20,8 +20,8 @@ const LeagueOverview = () => {
   const [error, setError] = useState(null);
   const [leagueInfo, setLeagueInfo] = useState(null);
 
-  // Simple function to load data
-  const loadData = async () => {
+  // Wrapped in useCallback
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -59,15 +59,15 @@ const LeagueOverview = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [leagueId, seasonId]); // Added dependencies
 
-  // Add debounced effect to prevent rapid reloads
+  // Updated useEffect with loadData dependency
   useEffect(() => {
     if (leagueId && seasonId) {
       const timer = setTimeout(loadData, 100);
       return () => clearTimeout(timer);
     }
-  }, [leagueId, seasonId]);
+  }, [leagueId, seasonId, loadData]); // Added loadData as dependency
 
   if (loading) {
     return (
