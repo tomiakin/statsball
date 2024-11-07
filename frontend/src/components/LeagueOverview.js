@@ -7,42 +7,51 @@ import {
   Table,
   Badge,
   Spinner,
+  Button,
+  Pagination,
 } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import * as api from "../services/api";
 
 const LeagueOverview = () => {
   const { leagueId, seasonId } = useParams();
-  const [matches, setMatches] = useState([]);
+  const [allMatches, setAllMatches] = useState([]); // Store all matches
+  const [displayedMatches, setDisplayedMatches] = useState([]); // Matches currently shown
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [leagueInfo, setLeagueInfo] = useState(null);
+  const navigate = useNavigate();
 
-  // Wrapped in useCallback
+  // Pagination states
+  const [showAllMatches, setShowAllMatches] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [matchesPerPage] = useState(10);
+
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // First get league info
       const leagueData = await api.getCompetitionInfo(leagueId, seasonId);
       setLeagueInfo(leagueData);
 
-      // Small delay before next request
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Then get matches
       const matchesData = await api.getLeagueMatches(leagueId, seasonId);
 
-      // Process matches
+      // Sort matches by date
       const sortedMatches = matchesData
         .filter((match) => match?.match_date)
-        .sort((a, b) => new Date(b.match_date) - new Date(a.match_date))
-        .slice(0, 5);
+        .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
 
-      // Extract unique teams
+      setAllMatches(sortedMatches);
+
+      // Set initial displayed matches (last 5)
+      setDisplayedMatches(sortedMatches.slice(0, 5));
+
+      // Process teams
       const uniqueTeams = Array.from(
         new Set(
           matchesData
@@ -51,7 +60,6 @@ const LeagueOverview = () => {
         )
       ).sort();
 
-      setMatches(sortedMatches);
       setTeams(uniqueTeams);
     } catch (err) {
       console.error("Error loading data:", err);
@@ -59,26 +67,52 @@ const LeagueOverview = () => {
     } finally {
       setLoading(false);
     }
-  }, [leagueId, seasonId]); // Added dependencies
+  }, [leagueId, seasonId]);
 
-  // Updated useEffect with loadData dependency
   useEffect(() => {
     if (leagueId && seasonId) {
       const timer = setTimeout(loadData, 100);
       return () => clearTimeout(timer);
     }
-  }, [leagueId, seasonId, loadData]); // Added loadData as dependency
+  }, [leagueId, seasonId, loadData]);
+
+  // Calculate pagination
+  const indexOfLastMatch = currentPage * matchesPerPage;
+  const indexOfFirstMatch = indexOfLastMatch - matchesPerPage;
+  const totalPages = Math.ceil(allMatches.length / matchesPerPage);
+
+  // Update displayed matches when pagination or view mode changes
+  useEffect(() => {
+    if (showAllMatches) {
+      setDisplayedMatches(
+        allMatches.slice(indexOfFirstMatch, indexOfLastMatch)
+      );
+    } else {
+      setDisplayedMatches(allMatches.slice(0, 5));
+    }
+  }, [
+    showAllMatches,
+    currentPage,
+    allMatches,
+    indexOfFirstMatch,
+    indexOfLastMatch,
+  ]);
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Toggle between all matches and recent matches
+  const toggleMatchesView = () => {
+    setShowAllMatches(!showAllMatches);
+    setCurrentPage(1); // Reset to first page when toggling
+  };
 
   if (loading) {
     return (
-      <Container
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "60vh" }}
-      >
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />
-          <p className="mt-2">Loading...</p>
-        </div>
+      <Container className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" variant="primary" />
       </Container>
     );
   }
@@ -88,9 +122,9 @@ const LeagueOverview = () => {
       <Container className="mt-4">
         <div className="alert alert-danger">
           <p>{error}</p>
-          <button className="btn btn-primary" onClick={loadData}>
+          <Button variant="primary" onClick={loadData}>
             Try Again
-          </button>
+          </Button>
         </div>
       </Container>
     );
@@ -112,12 +146,21 @@ const LeagueOverview = () => {
         </Card.Body>
       </Card>
 
+      {/* Matches Section */}
       <Row className="g-4">
-        {/* Recent Matches */}
         <Col xs={12}>
           <Card className="h-100">
-            <Card.Header className="bg-light">
-              <h4 className="mb-0">Recent Matches</h4>
+            <Card.Header className="bg-light d-flex justify-content-between align-items-center">
+              <h4 className="mb-0">
+                {showAllMatches ? "All Matches" : "Recent Matches"}
+              </h4>
+              <Button
+                variant="outline-primary"
+                onClick={toggleMatchesView}
+                className="float-end"
+              >
+                {showAllMatches ? "Show Recent Matches" : "View All Matches"}
+              </Button>
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive">
@@ -133,11 +176,11 @@ const LeagueOverview = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {matches.map((match) => (
+                    {displayedMatches.map((match) => (
                       <tr
                         key={match.match_id}
                         style={{ cursor: "pointer" }}
-                        onClick={() => console.log("Match clicked:", match)}
+                        onClick={() => navigate(`/match/${match.match_id}`)}
                       >
                         <td>
                           {format(new Date(match.match_date), "MMM d, yyyy")}
@@ -168,10 +211,46 @@ const LeagueOverview = () => {
                   </tbody>
                 </Table>
               </div>
+
+              {/* Pagination */}
+              {showAllMatches && totalPages > 1 && (
+                <div className="d-flex justify-content-center p-3">
+                  <Pagination>
+                    <Pagination.First
+                      onClick={() => handlePageChange(1)}
+                      disabled={currentPage === 1}
+                    />
+                    <Pagination.Prev
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    />
+
+                    {[...Array(totalPages)].map((_, index) => (
+                      <Pagination.Item
+                        key={index + 1}
+                        active={currentPage === index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                      >
+                        {index + 1}
+                      </Pagination.Item>
+                    ))}
+
+                    <Pagination.Next
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    />
+                    <Pagination.Last
+                      onClick={() => handlePageChange(totalPages)}
+                      disabled={currentPage === totalPages}
+                    />
+                  </Pagination>
+                </div>
+              )}
             </Card.Body>
           </Card>
         </Col>
 
+        {/* Keep your existing Teams section */}
         {/* Teams */}
         <Col xs={12}>
           <Card className="h-100">

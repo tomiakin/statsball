@@ -91,3 +91,13 @@ export const getTouchData = async (matchId, playerName) => {
     throw new Error("Failed to load touch data");
   }
 };
+
+export const getMatchLineups = async (matchId) => {
+  try {
+    const response = await apiClient.get(`lineups/${matchId}/`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch lineups for match ${matchId}:`, error);
+    throw new Error("Failed to load match lineups");
+  }
+};
