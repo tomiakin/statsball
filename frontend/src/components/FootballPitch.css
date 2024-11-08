@@ -161,36 +161,74 @@
   border-right: none;
 }
 
+/* Marker styling */
 .marker {
   position: absolute;
   width: 8px;
   height: 8px;
-  background-color: rgba(13, 110, 253, 0.8); /* Bootstrap primary color */
+  background-color: blue; /* Default touch color */
   border: 2px solid white;
   border-radius: 50%;
   cursor: pointer;
   transform: translate(-50%, -50%);
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   outline: none;
 }
 
+/* Individual marker types */
+.marker-shot {
+  background-color: orange;
+}
+
+.marker-assist {
+  background-color: yellow;
+}
+
+/* Hover and focus only increase the size, no color change */
 .marker:hover,
-.marker:focus {
-  transform: translate(-50%, -50%) scale(1.5);
-  background-color: rgba(13, 110, 253, 1);
-}
-
+.marker:focus,
 .marker.selected {
-  background-color: #dc3545; /* Bootstrap danger color */
   transform: translate(-50%, -50%) scale(1.5);
 }
 
+/* Info box styling */
 .info-box {
   width: 100%;
   background-color: #f8f9fa; /* Bootstrap light color */
 }
 
-/* Make the pitch container responsive */
+/* Legend styling */
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 20px;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.legend-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legend-marker {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+/* Responsiveness */
 @media (max-width: 768px) {
   .field {
     width: 100%;

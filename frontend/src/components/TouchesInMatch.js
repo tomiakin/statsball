@@ -37,7 +37,6 @@ const TouchesInMatch = () => {
   useEffect(() => {
     fetchTouchData();
 
-    // Cleanup function
     return () => {
       setTouches([]);
       setSelectedTouch(null);
@@ -49,8 +48,8 @@ const TouchesInMatch = () => {
   }, []);
 
   return (
-    <Container className="mt-4">
-      <Card className="shadow-sm">
+    <Container className="mt-4 d-flex">
+      <Card className="shadow-sm" style={{ flex: "1" }}>
         <Card.Header className="bg-primary text-white">
           <h4 className="mb-0">Player Touches - {playerName}</h4>
         </Card.Header>
@@ -61,7 +60,7 @@ const TouchesInMatch = () => {
             </Alert>
           )}
 
-          <div className="pitch-container">
+          <div className="pitch-container d-flex">
             <div className="field">
               {/* Field markings */}
               <div className="center-circle" />
@@ -86,10 +85,15 @@ const TouchesInMatch = () => {
                   const xPercent = (touch.location[0] / 120) * 100;
                   const yPercent = (touch.location[1] / 80) * 100;
 
+                  const markerClass = 
+                    touch.type === "Shot" ? "marker-shot" :
+                    touch.type === "assist" ? "marker-assist" :
+                    "marker";
+
                   return (
                     <div
                       key={`${index}-${touch.type}-${touch.location.join("-")}`}
-                      className={`marker ${
+                      className={`marker ${markerClass} ${
                         selectedTouch === touch ? "selected" : ""
                       }`}
                       style={{
@@ -99,7 +103,7 @@ const TouchesInMatch = () => {
                       onClick={() => handleTouchClick(touch)}
                       role="button"
                       tabIndex={0}
-                      onKeyPress={(e) => {
+                      onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           handleTouchClick(touch);
                         }
@@ -116,26 +120,37 @@ const TouchesInMatch = () => {
                 </div>
               </div>
             )}
-
-            {selectedTouch && (
-              <Card className="info-box mt-3">
-                <Card.Body>
-                  <h5 className="mb-3">Touch Information</h5>
-                  <p className="mb-2">
-                    <strong>Type:</strong> {selectedTouch.type}
-                  </p>
-                  <p className="mb-0">
-                    <strong>Location:</strong>
-                    {` X: ${selectedTouch.location[0].toFixed(
-                      1
-                    )}, Y: ${selectedTouch.location[1].toFixed(1)}`}
-                  </p>
-                </Card.Body>
-              </Card>
-            )}
           </div>
+
+          {selectedTouch && (
+            <Card className="info-box mt-3">
+              <Card.Body>
+                <h5 className="mb-3">Touch Information</h5>
+                <p className="mb-2">
+                  <strong>Type:</strong> {selectedTouch.type}
+                </p>
+                <p className="mb-0">
+                  <strong>Location:</strong>
+                  {` X: ${selectedTouch.location[0].toFixed(
+                    1
+                  )}, Y: ${selectedTouch.location[1].toFixed(1)}`}
+                </p>
+              </Card.Body>
+            </Card>
+          )}
         </Card.Body>
       </Card>
+
+      {/* Legend */}
+      <div className="legend-container ms-3">
+        <h5 className="legend-title">Legend</h5>
+        <div className="legend-item">
+          <div className="legend-marker marker-shot"></div> Shot
+        </div>
+        <div className="legend-item">
+          <div className="legend-marker marker-assist"></div> Assist
+        </div>
+      </div>
     </Container>
   );
 };
