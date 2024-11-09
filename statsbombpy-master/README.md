@@ -6,33 +6,34 @@ Brought to you by StatsBomb, this repository is a Python package that allows use
 
 **Support: support@statsbomb.com**
 
-
 ## Installation Instructions
 
 `pip install statsbombpy`
 
-
 ## Running the tests
 
 `nose2 -v --pretty-assert`
-
 
 ## Configuration
 
 ### Authentication
 
 #### Environment Variables
+
 Authentication can be done by setting environment variables named `SB_USERNAME` and `SB_PASSWORD` to your login credentials.
 
 #### Manual Calls
+
 Alternatively, if you don't want to use environment variables, all functions accept an argument `creds` to pass your login credentials in the format `{"user": "", "passwd": ""}`
 
 ### Concurrency
+
 You can specify how many of your computer's cores to use when running the `sb.competition_events()` and `sb.competition_frames()` functions by setting the environment variable `SB_CORES` to the number you want to use. Allowing statsbombpy to use more cores will speed up those functions.
 
 If you don't have an environment variable set we will try to detect the number of cores in your system and use 2 less than that number. If we cannot detect the number of cores we set the number to 4.
 
 ## Open Data
+
 StatsBomb's open data can be accessed without the need of authentication.
 
 StatsBomb are committed to sharing new data and research publicly to enhance understanding of the game of Football. We want to actively encourage new research and analysis at all levels. Therefore we have made certain leagues of StatsBomb Data freely available for public use for research projects and genuine interest in football analytics.
@@ -40,9 +41,9 @@ StatsBomb are committed to sharing new data and research publicly to enhance und
 StatsBomb are hoping that by making data freely available, we will extend the wider football analytics community and attract new talent to the industry. We would like to collect some basic personal information about users of our data. By [giving us your email address](https://statsbomb.com/resource-centre/), it means we will let you know when we make more data, tutorials and research available. We will store the information in accordance with our Privacy Policy and the GDPR.
 
 #### Terms & Conditions
+
 Whilst we are keen to share data and facilitate research, we also urge you to be responsible with the data. Please register your details on https://www.statsbomb.com/resource-centre and read our [User Agreement](doc/LICENSE.pdf) carefully.
 By using this repository, you are agreeing to the user agreement. If you publish, share or distribute any research, analysis or insights based on this data, please state the data source as StatsBomb and use our logo.
-
 
 ## Usage
 
@@ -50,12 +51,12 @@ By using this repository, you are agreeing to the user agreement. If you publish
 from statsbombpy import sb
 ```
 
-
 ### Competitions
 
 ```
 sb.competitions()
 ```
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -129,12 +130,12 @@ sb.competitions()
   </tbody>
 </table>
 
-
 ### Matches
 
 ```
 sb.matches(competition_id=9, season_id=42)
 ```
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -280,12 +281,12 @@ sb.matches(competition_id=9, season_id=42)
   </tbody>
 </table>
 
-
 ### Lineups
 
 ```
 sb.lineups(match_id=303299)["Eintracht Frankfurt"]
 ```
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -365,8 +366,8 @@ sb.lineups(match_id=303299)["Eintracht Frankfurt"]
   </tbody>
 </table>
 
-
 ### Events
+
 The default settings for querying events return a single dataframe with all event types and event attributes.
 
 ```
@@ -896,13 +897,12 @@ events = sb.events(match_id=303299)
   </tbody>
 </table>
 
-
-
-
 It's also possible to get distinct dataframes for each event type and/or to have distinct event attributes on their own columns
+
 ```
 sb.events(match_id=303299, split=True, flatten_attrs=False)["dribbles"]
 ```
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1042,10 +1042,10 @@ sb.events(match_id=303299, split=True, flatten_attrs=False)["dribbles"]
   </tbody>
 </table>
 
-
-
 ### Competition Events
+
 All events from a given competition can be queried and stored on a single dataframe
+
 ```
 events = sb.competition_events(
     country="Germany",
@@ -1062,6 +1062,7 @@ grouped_events = sb.competition_events(
 )
 grouped_events["dribbles"]
 ```
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1202,6 +1203,7 @@ grouped_events["dribbles"]
 </table>
 
 ### 360 Metrics
+
 If you have access to 360 data for a competition, you can set `include_360_metrics=True` in the `events()` and `competition_events()` functions to retrieve 360 metrics such a line breaking passess together with the event data.
 
 The open data does not include the 360 metrics. This is currently only available to customers with a data subscription.
@@ -1216,6 +1218,7 @@ comp_events = sb.competition_events(
 )
 comp_events
 ```
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1993,7 +1996,8 @@ comp_events
 
 ### 360 Frames
 
-The frame functions will return the raw 360 freeze frame data along with the visible area for each frame. This is returned at the player level so you have multiple rows per frame/event_id. 
+The frame functions will return the raw 360 freeze frame data along with the visible area for each frame. This is returned at the player level so you have multiple rows per frame/event_id.
+
 ```
 match_frames = sb.frames(match_id=3772072, fmt='dataframe')
 comp_frames = sb.competition_frames(
@@ -2079,7 +2083,7 @@ match_frames
 
 ### Aggregated Stats
 
-For customers we also provide aggregated statistics at the player-match, player-season and team-season levels. 
+For customers we also provide aggregated statistics at the player-match, player-season and team-season levels.
 
 ```
 player_match = sb.player_match_stats(3772072)
@@ -2626,7 +2630,9 @@ player_match
 </table>
 
 ### Raw Files
+
 Alternatively, entities can be accessed as python dictionaries serving as an interface to raw jsons and without performing any preprocessing
+
 ```
 
 sb.competitions(fmt="dict")

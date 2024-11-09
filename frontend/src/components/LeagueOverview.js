@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -9,10 +9,10 @@ import {
   Spinner,
   Button,
   Pagination,
-} from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import * as api from "../services/api";
+} from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import * as api from '../services/api';
 
 const LeagueOverview = () => {
   const { leagueId, seasonId } = useParams();
@@ -37,13 +37,13 @@ const LeagueOverview = () => {
       const leagueData = await api.getCompetitionInfo(leagueId, seasonId);
       setLeagueInfo(leagueData);
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const matchesData = await api.getLeagueMatches(leagueId, seasonId);
 
       // Sort matches by date
       const sortedMatches = matchesData
-        .filter((match) => match?.match_date)
+        .filter(match => match?.match_date)
         .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
 
       setAllMatches(sortedMatches);
@@ -55,15 +55,15 @@ const LeagueOverview = () => {
       const uniqueTeams = Array.from(
         new Set(
           matchesData
-            .filter((match) => match?.home_team && match?.away_team)
-            .flatMap((match) => [match.home_team, match.away_team])
-        )
+            .filter(match => match?.home_team && match?.away_team)
+            .flatMap(match => [match.home_team, match.away_team]),
+        ),
       ).sort();
 
       setTeams(uniqueTeams);
     } catch (err) {
-      console.error("Error loading data:", err);
-      setError("Failed to load data. Please try again.");
+      console.error('Error loading data:', err);
+      setError('Failed to load data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ const LeagueOverview = () => {
   useEffect(() => {
     if (showAllMatches) {
       setDisplayedMatches(
-        allMatches.slice(indexOfFirstMatch, indexOfLastMatch)
+        allMatches.slice(indexOfFirstMatch, indexOfLastMatch),
       );
     } else {
       setDisplayedMatches(allMatches.slice(0, 5));
@@ -99,7 +99,7 @@ const LeagueOverview = () => {
   ]);
 
   // Handle page change
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
 
@@ -111,18 +111,18 @@ const LeagueOverview = () => {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <Spinner animation="border" variant="primary" />
+      <Container className='d-flex justify-content-center align-items-center vh-100'>
+        <Spinner animation='border' variant='primary' />
       </Container>
     );
   }
 
   if (error) {
     return (
-      <Container className="mt-4">
-        <div className="alert alert-danger">
+      <Container className='mt-4'>
+        <div className='alert-danger alert'>
           <p>{error}</p>
-          <Button variant="primary" onClick={loadData}>
+          <Button variant='primary' onClick={loadData}>
             Try Again
           </Button>
         </div>
@@ -131,15 +131,15 @@ const LeagueOverview = () => {
   }
 
   return (
-    <Container className="py-4">
+    <Container className='py-4'>
       {/* League Header */}
-      <Card className="mb-4 bg-primary text-white">
+      <Card className='mb-4 bg-primary text-white'>
         <Card.Body>
-          <Row className="align-items-center">
+          <Row className='align-items-center'>
             <Col>
-              <h2 className="mb-0">{leagueInfo?.competition || "League"}</h2>
-              <p className="mb-0 opacity-75">
-                {leagueInfo?.season || "Season"}
+              <h2 className='mb-0'>{leagueInfo?.competition || 'League'}</h2>
+              <p className='mb-0 opacity-75'>
+                {leagueInfo?.season || 'Season'}
               </p>
             </Col>
           </Row>
@@ -147,24 +147,24 @@ const LeagueOverview = () => {
       </Card>
 
       {/* Matches Section */}
-      <Row className="g-4">
+      <Row className='g-4'>
         <Col xs={12}>
-          <Card className="h-100">
-            <Card.Header className="bg-light d-flex justify-content-between align-items-center">
-              <h4 className="mb-0">
-                {showAllMatches ? "All Matches" : "Recent Matches"}
+          <Card className='h-100'>
+            <Card.Header className='bg-light d-flex justify-content-between align-items-center'>
+              <h4 className='mb-0'>
+                {showAllMatches ? 'All Matches' : 'Recent Matches'}
               </h4>
               <Button
-                variant="outline-primary"
+                variant='outline-primary'
                 onClick={toggleMatchesView}
-                className="float-end"
+                className='float-end'
               >
-                {showAllMatches ? "Show Recent Matches" : "View All Matches"}
+                {showAllMatches ? 'Show Recent Matches' : 'View All Matches'}
               </Button>
             </Card.Header>
-            <Card.Body className="p-0">
-              <div className="table-responsive">
-                <Table hover className="mb-0">
+            <Card.Body className='p-0'>
+              <div className='table-responsive'>
+                <Table hover className='mb-0'>
                   <thead>
                     <tr>
                       <th>Date</th>
@@ -176,31 +176,31 @@ const LeagueOverview = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayedMatches.map((match) => (
+                    {displayedMatches.map(match => (
                       <tr
                         key={match.match_id}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => navigate(`/match/${match.match_id}`)}
                       >
                         <td>
-                          {format(new Date(match.match_date), "MMM d, yyyy")}
+                          {format(new Date(match.match_date), 'MMM d, yyyy')}
                           <br />
-                          <small className="text-muted">{match.kick_off}</small>
+                          <small className='text-muted'>{match.kick_off}</small>
                         </td>
                         <td>{match.home_team}</td>
-                        <td className="text-center">
+                        <td className='text-center'>
                           <strong>
                             {match.home_score} - {match.away_score}
                           </strong>
                         </td>
                         <td>{match.away_team}</td>
-                        <td>Week {match.match_week || "N/A"}</td>
+                        <td>Week {match.match_week || 'N/A'}</td>
                         <td>
                           <Badge
                             bg={
-                              match.match_status === "available"
-                                ? "success"
-                                : "secondary"
+                              match.match_status === 'available'
+                                ? 'success'
+                                : 'secondary'
                             }
                           >
                             {match.match_status}
@@ -214,7 +214,7 @@ const LeagueOverview = () => {
 
               {/* Pagination */}
               {showAllMatches && totalPages > 1 && (
-                <div className="d-flex justify-content-center p-3">
+                <div className='d-flex justify-content-center p-3'>
                   <Pagination>
                     <Pagination.First
                       onClick={() => handlePageChange(1)}
@@ -253,33 +253,33 @@ const LeagueOverview = () => {
         {/* Keep your existing Teams section */}
         {/* Teams */}
         <Col xs={12}>
-          <Card className="h-100">
-            <Card.Header className="bg-light">
-              <h4 className="mb-0">Teams</h4>
+          <Card className='h-100'>
+            <Card.Header className='bg-light'>
+              <h4 className='mb-0'>Teams</h4>
             </Card.Header>
             <Card.Body>
-              <Row className="g-3">
-                {teams.map((team) => (
+              <Row className='g-3'>
+                {teams.map(team => (
                   <Col key={team} xs={12} sm={6} md={4} lg={3}>
                     <Card
-                      className="h-100 team-card"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => console.log("Team clicked:", team)}
+                      className='h-100 team-card'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => console.log('Team clicked:', team)}
                     >
-                      <Card.Body className="text-center">
-                        <div className="mb-2">
+                      <Card.Body className='text-center'>
+                        <div className='mb-2'>
                           <img
                             src={`/api/placeholder/50/50`}
                             alt={`${team} logo`}
-                            className="team-logo"
+                            className='team-logo'
                             style={{
-                              width: "50px",
-                              height: "50px",
-                              objectFit: "contain",
+                              width: '50px',
+                              height: '50px',
+                              objectFit: 'contain',
                             }}
                           />
                         </div>
-                        <h6 className="mb-0">{team}</h6>
+                        <h6 className='mb-0'>{team}</h6>
                       </Card.Body>
                     </Card>
                   </Col>
