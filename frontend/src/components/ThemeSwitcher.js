@@ -7,10 +7,13 @@ const ThemeSwitcher = () => {
   }, []);
 
   return (
-    <div className="p-4">
-      <select data-choose-theme className="select select-bordered w-full max-w-xs">
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
+    <div className='p-4'>
+      <select
+        data-choose-theme
+        className='select select-bordered w-full max-w-xs'
+      >
+        <option value='light'>Light</option>
+        <option value='dark'>Dark</option>
       </select>
     </div>
   );

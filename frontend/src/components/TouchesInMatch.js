@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { Card, Container, Alert } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-import * as api from "../services/api";
-import "./FootballPitch.css";
+import React, { useEffect, useState, useCallback } from 'react';
+import { Card, Container, Alert } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import * as api from '../services/api';
+import './FootballPitch.css';
 
 const TouchesInMatch = () => {
   const { matchId, playerName } = useParams();
@@ -13,7 +13,7 @@ const TouchesInMatch = () => {
 
   const fetchTouchData = useCallback(async () => {
     if (!matchId || !playerName) {
-      setError("Match ID or player name is missing");
+      setError('Match ID or player name is missing');
       setLoading(false);
       return;
     }
@@ -27,7 +27,7 @@ const TouchesInMatch = () => {
       setTouches(data);
       setError(null);
     } catch (error) {
-      setError("Failed to load touch data. Please try again.");
+      setError('Failed to load touch data. Please try again.');
       setTouches([]);
     } finally {
       setLoading(false);
@@ -43,41 +43,41 @@ const TouchesInMatch = () => {
     };
   }, [fetchTouchData]);
 
-  const handleTouchClick = useCallback((touch) => {
-    setSelectedTouch((prev) => (prev === touch ? null : touch));
+  const handleTouchClick = useCallback(touch => {
+    setSelectedTouch(prev => (prev === touch ? null : touch));
   }, []);
 
   return (
-    <Container className="mt-4 d-flex">
-      <Card className="shadow-sm" style={{ flex: "1" }}>
-        <Card.Header className="bg-primary text-white">
-          <h4 className="mb-0">Player Touches - {playerName}</h4>
+    <Container className='d-flex mt-4'>
+      <Card className='shadow-sm' style={{ flex: '1' }}>
+        <Card.Header className='bg-primary text-white'>
+          <h4 className='mb-0'>Player Touches - {playerName}</h4>
         </Card.Header>
         <Card.Body>
           {error && (
-            <Alert variant="danger" className="mb-3">
+            <Alert variant='danger' className='mb-3'>
               {error}
             </Alert>
           )}
 
-          <div className="pitch-container d-flex">
-            <div className="field">
+          <div className='pitch-container d-flex'>
+            <div className='field'>
               {/* Field markings */}
-              <div className="center-circle" />
-              <div className="center-spot" />
-              <div className="half-line" />
-              <div className="penalty-area left" />
-              <div className="penalty-area right" />
-              <div className="goal-area left" />
-              <div className="goal-area right" />
-              <div className="penalty-spot left" />
-              <div className="penalty-spot right" />
-              <div className="goal left" />
-              <div className="goal right" />
-              <div className="corner-arc top-left" />
-              <div className="corner-arc top-right" />
-              <div className="corner-arc bottom-left" />
-              <div className="corner-arc bottom-right" />
+              <div className='center-circle' />
+              <div className='center-spot' />
+              <div className='half-line' />
+              <div className='penalty-area left' />
+              <div className='penalty-area right' />
+              <div className='goal-area left' />
+              <div className='goal-area right' />
+              <div className='penalty-spot left' />
+              <div className='penalty-spot right' />
+              <div className='goal left' />
+              <div className='goal right' />
+              <div className='corner-arc top-left' />
+              <div className='corner-arc top-right' />
+              <div className='corner-arc bottom-left' />
+              <div className='corner-arc bottom-right' />
 
               {/* Touch markers */}
               {!loading &&
@@ -85,26 +85,28 @@ const TouchesInMatch = () => {
                   const xPercent = (touch.location[0] / 120) * 100;
                   const yPercent = (touch.location[1] / 80) * 100;
 
-                  const markerClass = 
-                    touch.type === "Shot" ? "marker-shot" :
-                    touch.type === "assist" ? "marker-assist" :
-                    "marker";
+                  const markerClass =
+                    touch.type === 'Shot'
+                      ? 'marker-shot'
+                      : touch.type === 'assist'
+                        ? 'marker-assist'
+                        : 'marker';
 
                   return (
                     <div
-                      key={`${index}-${touch.type}-${touch.location.join("-")}`}
+                      key={`${index}-${touch.type}-${touch.location.join('-')}`}
                       className={`marker ${markerClass} ${
-                        selectedTouch === touch ? "selected" : ""
+                        selectedTouch === touch ? 'selected' : ''
                       }`}
                       style={{
                         left: `${xPercent}%`,
                         top: `${yPercent}%`,
                       }}
                       onClick={() => handleTouchClick(touch)}
-                      role="button"
+                      role='button'
                       tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
                           handleTouchClick(touch);
                         }
                       }}
@@ -114,25 +116,25 @@ const TouchesInMatch = () => {
             </div>
 
             {loading && (
-              <div className="text-center my-4">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
+              <div className='my-4 text-center'>
+                <div className='spinner-border text-primary' role='status'>
+                  <span className='visually-hidden'>Loading...</span>
                 </div>
               </div>
             )}
           </div>
 
           {selectedTouch && (
-            <Card className="info-box mt-3">
+            <Card className='info-box mt-3'>
               <Card.Body>
-                <h5 className="mb-3">Touch Information</h5>
-                <p className="mb-2">
+                <h5 className='mb-3'>Touch Information</h5>
+                <p className='mb-2'>
                   <strong>Type:</strong> {selectedTouch.type}
                 </p>
-                <p className="mb-0">
+                <p className='mb-0'>
                   <strong>Location:</strong>
                   {` X: ${selectedTouch.location[0].toFixed(
-                    1
+                    1,
                   )}, Y: ${selectedTouch.location[1].toFixed(1)}`}
                 </p>
               </Card.Body>
@@ -142,13 +144,13 @@ const TouchesInMatch = () => {
       </Card>
 
       {/* Legend */}
-      <div className="legend-container ms-3">
-        <h5 className="legend-title">Legend</h5>
-        <div className="legend-item">
-          <div className="legend-marker marker-shot"></div> Shot
+      <div className='legend-container ms-3'>
+        <h5 className='legend-title'>Legend</h5>
+        <div className='legend-item'>
+          <div className='legend-marker marker-shot'></div> Shot
         </div>
-        <div className="legend-item">
-          <div className="legend-marker marker-assist"></div> Assist
+        <div className='legend-item'>
+          <div className='legend-marker marker-assist'></div> Assist
         </div>
       </div>
     </Container>

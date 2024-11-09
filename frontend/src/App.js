@@ -13,22 +13,22 @@ import './index.css';
 function App() {
   return (
     // <ThemeProvider>
-      <Router>
-        {/* <Navigation /> */}
-        <Routes>
-        <Route path='/base' element={<BaseLayout />} /> 
-          <Route path='/' element={<Home />} />
-          <Route
-            path='/league/:leagueId/:seasonId'
-            element={<LeagueOverview />}
-          />
-          <Route path='/match/:matchId' element={<MatchDetails />} />
-          <Route
-            path='/touches/:matchId/:playerName'
-            element={<TouchesInMatch />}
-          />
-        </Routes>
-      </Router>
+    <Router>
+      {/* <Navigation /> */}
+      <Routes>
+        <Route path='/base' element={<BaseLayout />} />
+        <Route path='/' element={<Home />} />
+        <Route
+          path='/league/:leagueId/:seasonId'
+          element={<LeagueOverview />}
+        />
+        <Route path='/match/:matchId' element={<MatchDetails />} />
+        <Route
+          path='/touches/:matchId/:playerName'
+          element={<TouchesInMatch />}
+        />
+      </Routes>
+    </Router>
     // </ThemeProvider>
   );
 }
