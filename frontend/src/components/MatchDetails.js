@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
-import { Container, Row, Col, Card, Table, Spinner } from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as api from '../services/api';
 
 const TeamLineup = ({ teamName, players, onPlayerClick }) => {
@@ -22,18 +21,26 @@ const TeamLineup = ({ teamName, players, onPlayerClick }) => {
   };
 
   return (
-    <Card className='mb-4'>
-      <Card.Header>
-        <h5 className='mb-0'>{teamName}</h5>
-      </Card.Header>
-      <Card.Body className='p-0'>
-        <Table hover className='mb-0'>
-          <thead>
+    <div className='mb-6 overflow-hidden rounded-lg bg-white shadow'>
+      <div className='border-b border-gray-200 bg-gray-50 px-4 py-3'>
+        <h5 className='m-0 font-semibold'>{teamName}</h5>
+      </div>
+      <div className='p-0'>
+        <table className='w-full'>
+          <thead className='bg-gray-50'>
             <tr>
-              <th>#</th>
-              <th>Player</th>
-              <th>Position</th>
-              <th>Status</th>
+              <th className='px-4 py-2 text-left text-sm font-medium text-gray-500'>
+                #
+              </th>
+              <th className='px-4 py-2 text-left text-sm font-medium text-gray-500'>
+                Player
+              </th>
+              <th className='px-4 py-2 text-left text-sm font-medium text-gray-500'>
+                Position
+              </th>
+              <th className='px-4 py-2 text-left text-sm font-medium text-gray-500'>
+                Status
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -41,16 +48,19 @@ const TeamLineup = ({ teamName, players, onPlayerClick }) => {
               <tr
                 key={player.player_id}
                 onClick={() => onPlayerClick(player.player_name)}
+                className='cursor-pointer hover:bg-gray-50'
               >
-                <td>{player.jersey_number || '-'}</td>
-                <td>{player.nickname || player.player_name}</td>
-                <td>{getPlayerPosition(player)}</td>
-                <td>
+                <td className='px-4 py-2'>{player.jersey_number || '-'}</td>
+                <td className='px-4 py-2'>
+                  {player.nickname || player.player_name}
+                </td>
+                <td className='px-4 py-2'>{getPlayerPosition(player)}</td>
+                <td className='px-4 py-2'>
                   <span
                     className={
                       getPlayerStatus(player) === 'Starting XI'
-                        ? 'text-success'
-                        : 'text-secondary'
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
                     {getPlayerStatus(player)}
@@ -59,15 +69,15 @@ const TeamLineup = ({ teamName, players, onPlayerClick }) => {
               </tr>
             ))}
           </tbody>
-        </Table>
-      </Card.Body>
-    </Card>
+        </table>
+      </div>
+    </div>
   );
 };
 
 const MatchDetails = () => {
   const { matchId } = useParams();
-  const navigate = useNavigate(); // Hook to navigate
+  const navigate = useNavigate();
   const [lineups, setLineups] = useState({ home: [], away: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -99,66 +109,62 @@ const MatchDetails = () => {
   }, [matchId]);
 
   const handlePlayerClick = playerName => {
-    navigate(`/touches/${matchId}/${playerName}`);
+    // Updated navigation to use the new player-performance route
+    navigate(
+      `/player-performance/${matchId}/${encodeURIComponent(playerName)}`,
+    );
   };
 
   if (loading) {
     return (
-      <Container
-        className='d-flex justify-content-center align-items-center'
-        style={{ minHeight: '60vh' }}
-      >
-        <Spinner animation='border' variant='primary' />
-      </Container>
+      <div className='flex min-h-[60vh] items-center justify-center'>
+        <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Container>
-        <div className='alert-danger alert mt-4'>{error}</div>
-      </Container>
+      <div className='container mx-auto px-4'>
+        <div className='mt-4 rounded bg-red-100 p-4 text-red-700'>{error}</div>
+      </div>
     );
   }
 
   return (
-    <Container className='py-4'>
-      <Card className='mb-4'>
-        <Card.Header>
-          <h4 className='mb-0'>Match Details</h4>
-        </Card.Header>
-        <Card.Body>
-          <Row>
-            <Col md={4} className='text-center'>
-              <h5>{lineups.homeTeam}</h5>
-            </Col>
-            <Col md={4} className='text-center'>
-              <h5>vs</h5>
-            </Col>
-            <Col md={4} className='text-center'>
-              <h5>{lineups.awayTeam}</h5>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+    <div className='container mx-auto px-4 py-4'>
+      <div className='mb-4 overflow-hidden rounded-lg bg-white shadow'>
+        <div className='border-b border-gray-200 bg-gray-50 px-4 py-3'>
+          <h4 className='m-0 font-semibold'>Match Details</h4>
+        </div>
+        <div className='px-4 py-4'>
+          <div className='grid grid-cols-3 text-center'>
+            <div>
+              <h5 className='text-lg font-medium'>{lineups.homeTeam}</h5>
+            </div>
+            <div>
+              <h5 className='text-lg font-medium'>vs</h5>
+            </div>
+            <div>
+              <h5 className='text-lg font-medium'>{lineups.awayTeam}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <Row>
-        <Col md={6}>
-          <TeamLineup
-            teamName={lineups.homeTeam}
-            players={lineups.home}
-            onPlayerClick={handlePlayerClick}
-          />
-        </Col>
-        <Col md={6}>
-          <TeamLineup
-            teamName={lineups.awayTeam}
-            players={lineups.away}
-            onPlayerClick={handlePlayerClick}
-          />
-        </Col>
-      </Row>
-    </Container>
+      <div className='grid gap-6 md:grid-cols-2'>
+        <TeamLineup
+          teamName={lineups.homeTeam}
+          players={lineups.home}
+          onPlayerClick={handlePlayerClick}
+        />
+        <TeamLineup
+          teamName={lineups.awayTeam}
+          players={lineups.away}
+          onPlayerClick={handlePlayerClick}
+        />
+      </div>
+    </div>
   );
 };
 

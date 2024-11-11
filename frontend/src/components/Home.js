@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Modal, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as api from '../services/api';
-import './LeagueSelection.css';
 
 const Home = () => {
   const [leagues, setLeagues] = useState([]);
@@ -11,13 +9,13 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeagues = async () => {
       try {
         const competitionsData = await api.getCompetitions();
-        // Group competitions by unique competition_id and get latest season info
         const uniqueLeagues = Object.values(
           competitionsData.reduce((acc, comp) => {
             if (
@@ -50,6 +48,22 @@ const Home = () => {
     fetchLeagues();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = event => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowModal(false);
+      }
+    };
+
+    if (showModal) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showModal]);
+
   const handleLeagueClick = async league => {
     try {
       const seasonsData = await api.getSeasons(league.id);
@@ -67,97 +81,91 @@ const Home = () => {
 
   if (loading) {
     return (
-      <Container className='d-flex justify-content-center align-items-center vh-100'>
-        <div className='spinner-border text-primary' role='status'>
-          <span className='visually-hidden'>Loading...</span>
-        </div>
-      </Container>
+      <div className='flex h-screen items-center justify-center'>
+        <div className='h-8 w-8 animate-spin rounded-full border-4 border-dotted border-blue-500'></div>
+        <span className='sr-only'>Loading...</span>
+      </div>
     );
   }
 
   return (
-    <Container fluid className='py-5' style={{ backgroundColor: '#f8f9fa' }}>
-      <h1 className='mb-5 text-center'>Select a League</h1>
+    <div className='container mx-auto bg-gray-100 py-8'>
+      <h1 className='mb-6 text-center text-3xl font-semibold'>
+        Select a League
+      </h1>
 
       {error && (
-        <div className='alert-danger alert mb-4 text-center' role='alert'>
+        <div className='mb-6 rounded border border-red-400 bg-red-100 px-4 py-3 text-center text-red-700'>
           {error}
         </div>
       )}
 
-      <Row className='g-4'>
+      <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
         {leagues.map(league => (
-          <Col key={league.id} xs={12} sm={6} md={4} lg={3}>
-            <Card
-              className='h-100 league-card'
-              onClick={() => handleLeagueClick(league)}
-              style={{
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-                ':hover': { transform: 'scale(1.03)' },
-              }}
-            >
-              <div className='pt-3 text-center'>
-                <img
-                  src={league.logoUrl}
-                  alt={`${league.name} logo`}
-                  className='img-fluid'
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    objectFit: 'contain',
-                  }}
-                />
-              </div>
-              <Card.Body className='text-center'>
-                <Card.Title>{league.name}</Card.Title>
-                <Card.Text className='text-muted'>
-                  {league.country}
-                  {league.international && ' • International'}
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
+          <div
+            key={league.id}
+            className='transform cursor-pointer rounded-lg bg-white p-6 text-center shadow-lg transition-transform hover:scale-105'
+            onClick={() => handleLeagueClick(league)}
+          >
+            <img
+              src={league.logoUrl}
+              alt={`${league.name} logo`}
+              className='mx-auto mb-4 h-24 w-24 object-contain'
+            />
+            <h3 className='text-xl font-semibold'>{league.name}</h3>
+            <p className='text-gray-500'>
+              {league.country} {league.international && '• International'}
+            </p>
+          </div>
         ))}
-      </Row>
+      </div>
 
-      <Modal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        centered
-        size='lg'
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedLeague?.name} - Select Season</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row className='g-3'>
-            {seasons.map(season => (
-              <Col key={season.season_id} xs={12} sm={6}>
-                <Card
-                  className='season-card h-100'
-                  onClick={() => {
-                    navigate(
-                      `/league/${selectedLeague.id}/${season.season_id}`,
-                    );
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <Card.Body className='text-center'>
-                    <h5 className='mb-0'>{season.season_name}</h5>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='secondary' onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Container>
+      {showModal && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+          <div
+            ref={modalRef}
+            className='w-full max-w-lg overflow-hidden rounded-lg bg-white shadow-lg'
+          >
+            <div className='flex items-center justify-between border-b p-4'>
+              <h2 className='text-xl font-semibold'>
+                {selectedLeague?.name} - Select Season
+              </h2>
+              <button
+                className='text-gray-500 hover:text-gray-700'
+                onClick={() => setShowModal(false)}
+              >
+                &times;
+              </button>
+            </div>
+            <div className='p-6'>
+              <div className='grid gap-4 sm:grid-cols-2'>
+                {seasons.map(season => (
+                  <div
+                    key={season.season_id}
+                    className='cursor-pointer rounded-lg bg-gray-100 p-4 text-center hover:bg-gray-200'
+                    onClick={() =>
+                      navigate(
+                        `/league/${selectedLeague.id}/${season.season_id}`,
+                      )
+                    }
+                  >
+                    <h3 className='text-lg'>{season.season_name}</h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className='border-t p-4 text-right'>
+              <button
+                className='rounded-lg bg-gray-200 px-4 py-2 hover:bg-gray-300'
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

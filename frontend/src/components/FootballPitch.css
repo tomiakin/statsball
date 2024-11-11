@@ -1,238 +1,154 @@
 .pitch-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
+  position: relative;
+  width: 100%;
+  padding-top: 66.67%; /* 3:2 aspect ratio */
+  background-color: #3c8f40;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .field {
-  position: relative;
-  width: 700px;
-  height: 450px;
-  background-color: #4caf50;
-  border: 5px solid #fff;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  margin: 20px auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid white;
 }
 
+/* Field Markings */
 .center-circle {
   position: absolute;
-  top: 50%;
   left: 50%;
-  width: 100px;
-  height: 100px;
-  margin-top: -50px;
-  margin-left: -50px;
-  border: 2px solid #fff;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  height: 30%;
+  border: 2px solid white;
   border-radius: 50%;
 }
 
 .center-spot {
   position: absolute;
-  top: 50%;
   left: 50%;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  margin-left: -3px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1%;
+  height: 1.5%;
   background-color: white;
   border-radius: 50%;
 }
 
 .half-line {
   position: absolute;
-  top: 0;
   left: 50%;
+  top: 0;
+  bottom: 0;
   width: 2px;
-  height: 100%;
   background-color: white;
 }
 
 .penalty-area {
   position: absolute;
-  width: 120px;
-  height: 250px;
-  border: 2px solid #fff;
+  top: 20%;
+  height: 60%;
+  width: 16%;
+  border: 2px solid white;
 }
 
 .penalty-area.left {
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .penalty-area.right {
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .goal-area {
   position: absolute;
-  width: 60px;
-  height: 140px;
-  border: 2px solid #fff;
+  top: 35%;
+  height: 30%;
+  width: 6%;
+  border: 2px solid white;
 }
 
 .goal-area.left {
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .goal-area.right {
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .penalty-spot {
   position: absolute;
-  width: 6px;
-  height: 6px;
+  top: 50%;
+  width: 1%;
+  height: 1.5%;
   background-color: white;
   border-radius: 50%;
+  transform: translateY(-50%);
 }
 
 .penalty-spot.left {
-  left: 80px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 12%;
 }
 
 .penalty-spot.right {
-  right: 80px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 12%;
 }
 
 .goal {
   position: absolute;
-  width: 16px;
-  height: 80px;
-  background-color: rgba(255, 255, 255, 0.8);
+  top: 42.5%;
+  height: 15%;
+  width: 2%;
+  border: 2px solid white;
 }
 
 .goal.left {
-  left: -16px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: -2px;
 }
 
 .goal.right {
-  right: -16px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: -2px;
 }
 
 .corner-arc {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #fff;
-  border-radius: 30%;
+  width: 4%;
+  height: 6%;
+  border: 2px solid white;
 }
 
 .corner-arc.top-left {
-  top: -5px;
-  left: -5px;
-  border-top: none;
+  left: 0;
+  top: 0;
+  border-radius: 0 0 100% 0;
   border-left: none;
+  border-top: none;
 }
 
 .corner-arc.top-right {
-  top: -5px;
-  right: -5px;
-  border-top: none;
+  right: 0;
+  top: 0;
+  border-radius: 0 0 0 100%;
   border-right: none;
+  border-top: none;
 }
 
 .corner-arc.bottom-left {
-  bottom: -5px;
-  left: -5px;
-  border-bottom: none;
+  left: 0;
+  bottom: 0;
+  border-radius: 0 100% 0 0;
   border-left: none;
+  border-bottom: none;
 }
 
 .corner-arc.bottom-right {
-  bottom: -5px;
-  right: -5px;
-  border-bottom: none;
+  right: 0;
+  bottom: 0;
+  border-radius: 100% 0 0 0;
   border-right: none;
-}
-
-/* Marker styling */
-.marker {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background-color: blue; /* Default touch color */
-  border: 2px solid white;
-  border-radius: 50%;
-  cursor: pointer;
-  transform: translate(-50%, -50%);
-  transition: transform 0.2s ease;
-  outline: none;
-}
-
-/* Individual marker types */
-.marker-shot {
-  background-color: orange;
-}
-
-.marker-assist {
-  background-color: yellow;
-}
-
-/* Hover and focus only increase the size, no color change */
-.marker:hover,
-.marker:focus,
-.marker.selected {
-  transform: translate(-50%, -50%) scale(1.5);
-}
-
-/* Info box styling */
-.info-box {
-  width: 100%;
-  background-color: #f8f9fa; /* Bootstrap light color */
-}
-
-/* Legend styling */
-.legend-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-left: 20px;
-  background-color: #f8f9fa;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-.legend-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.legend-marker {
-  width: 12px;
-  height: 12px;
-  margin-right: 8px;
-  border-radius: 50%;
-}
-
-/* Responsiveness */
-@media (max-width: 768px) {
-  .field {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1.556; /* Maintains 700:450 ratio */
-  }
+  border-bottom: none;
 }
