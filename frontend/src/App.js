@@ -12,16 +12,16 @@ function App() {
     <Router>
       <BaseLayout>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route 
-            path="/player-performance/:matchId/:playerName" 
-            element={<PlayerPerformance />} 
+          <Route path='/' element={<Home />} />
+          <Route
+            path='/player-performance/:matchId/:playerName'
+            element={<PlayerPerformance />}
           />
           <Route
-            path="/league/:leagueId/:seasonId"
+            path='/league/:leagueId/:seasonId'
             element={<LeagueOverview />}
           />
-          <Route path="/match/:matchId" element={<MatchDetails />} />
+          <Route path='/match/:matchId' element={<MatchDetails />} />
         </Routes>
       </BaseLayout>
     </Router>

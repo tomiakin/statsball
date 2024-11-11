@@ -53,31 +53,31 @@ const PlayerPerformance = () => {
     fetchTouchData();
   }, [matchId, playerName]);
 
-  const handleTouchClick = (touch) => {
-    setSelectedTouch((prev) => (prev === touch ? null : touch));
+  const handleTouchClick = touch => {
+    setSelectedTouch(prev => (prev === touch ? null : touch));
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-12 gap-4">
+    <div className='min-h-screen bg-gray-100'>
+      <div className='container mx-auto px-4 py-8'>
+        <div className='grid grid-cols-12 gap-4'>
           {/* Player Info */}
-          <div className="col-span-12 rounded-lg bg-white p-6 shadow-lg lg:col-span-3">
-            <h2 className="text-2xl font-bold">Player Information</h2>
-            <div className="flex flex-col items-center">
-              <div className="h-32 w-32 rounded-full bg-gray-200"></div>
-              <h3 className="mt-4 text-xl font-semibold">
+          <div className='col-span-12 rounded-lg bg-white p-6 shadow-lg lg:col-span-3'>
+            <h2 className='text-2xl font-bold'>Player Information</h2>
+            <div className='flex flex-col items-center'>
+              <div className='h-32 w-32 rounded-full bg-gray-200'></div>
+              <h3 className='mt-4 text-xl font-semibold'>
                 {playerName || 'Player Name'}
               </h3>
-              <p className="text-gray-600">Team • Nationality</p>
+              <p className='text-gray-600'>Team • Nationality</p>
             </div>
           </div>
 
           {/* Main Content Area */}
-          <div className="col-span-12 lg:col-span-9">
+          <div className='col-span-12 lg:col-span-9'>
             {/* Stat Navigation */}
-            <div className="mb-4 flex overflow-x-auto rounded-lg bg-white p-4 shadow-lg">
-              {statCategories.map((category) => (
+            <div className='mb-4 flex overflow-x-auto rounded-lg bg-white p-4 shadow-lg'>
+              {statCategories.map(category => (
                 <button
                   key={category.id}
                   className={`mr-4 whitespace-nowrap rounded-full px-6 py-2 ${
@@ -92,12 +92,12 @@ const PlayerPerformance = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-12 gap-4">
+            <div className='grid grid-cols-12 gap-4'>
               {/* Player Lineups */}
-              <div className="col-span-12 rounded-lg bg-white p-6 shadow-lg lg:col-span-3">
-                <h3 className="mb-4 text-xl font-semibold">Team Lineup</h3>
-                <div className="divide-y">
-                  {players.map((player) => (
+              <div className='col-span-12 rounded-lg bg-white p-6 shadow-lg lg:col-span-3'>
+                <h3 className='mb-4 text-xl font-semibold'>Team Lineup</h3>
+                <div className='divide-y'>
+                  {players.map(player => (
                     <div
                       key={player.id}
                       className={`cursor-pointer p-3 hover:bg-gray-50 ${
@@ -105,15 +105,15 @@ const PlayerPerformance = () => {
                       }`}
                       onClick={() => setSelectedPlayer(player)}
                     >
-                      <div className="flex items-center justify-between">
+                      <div className='flex items-center justify-between'>
                         <div>
-                          <span className="font-medium">{player.name}</span>
-                          <span className="ml-2 text-sm text-gray-500">
+                          <span className='font-medium'>{player.name}</span>
+                          <span className='ml-2 text-sm text-gray-500'>
                             {player.position}
                           </span>
                         </div>
-                        <div className="text-sm text-gray-600">
-                          <span className="mr-2">{player.goals}G</span>
+                        <div className='text-sm text-gray-600'>
+                          <span className='mr-2'>{player.goals}G</span>
                           <span>{player.assists}A</span>
                         </div>
                       </div>
@@ -123,13 +123,13 @@ const PlayerPerformance = () => {
               </div>
 
               {/* Stats Area */}
-              <div className="col-span-12 space-y-4 lg:col-span-9">
+              <div className='col-span-12 space-y-4 lg:col-span-9'>
                 {/* Pitch Visualization */}
-                <div className="rounded-lg bg-white p-6 shadow-lg">
-                  <div className="mb-4 flex space-x-4 overflow-x-auto">
+                <div className='rounded-lg bg-white p-6 shadow-lg'>
+                  <div className='mb-4 flex space-x-4 overflow-x-auto'>
                     {statCategories
-                      .find((cat) => cat.id === selectedStat)
-                      ?.subStats.map((subStat) => (
+                      .find(cat => cat.id === selectedStat)
+                      ?.subStats.map(subStat => (
                         <button
                           key={subStat}
                           className={`whitespace-nowrap rounded-md px-4 py-2 ${
@@ -144,13 +144,13 @@ const PlayerPerformance = () => {
                       ))}
                   </div>
 
-                  <div className="relative h-96">
+                  <div className='relative h-96'>
                     {loading ? (
-                      <div className="flex h-full items-center justify-center">
-                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+                      <div className='flex h-full items-center justify-center'>
+                        <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
                       </div>
                     ) : error ? (
-                      <div className="flex h-full items-center justify-center text-red-500">
+                      <div className='flex h-full items-center justify-center text-red-500'>
                         {error}
                       </div>
                     ) : (
@@ -167,48 +167,48 @@ const PlayerPerformance = () => {
                 </div>
 
                 {/* Detailed Stats */}
-                <div className="rounded-lg bg-white p-6 shadow-lg">
-                  <h3 className="mb-4 text-xl font-semibold">
+                <div className='rounded-lg bg-white p-6 shadow-lg'>
+                  <h3 className='mb-4 text-xl font-semibold'>
                     Detailed Statistics
                   </h3>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
                     {selectedTouch ? (
                       <>
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <p className="text-sm text-gray-500">Touch Type</p>
-                          <p className="text-2xl font-bold">
+                        <div className='rounded-lg bg-gray-50 p-4'>
+                          <p className='text-sm text-gray-500'>Touch Type</p>
+                          <p className='text-2xl font-bold'>
                             {selectedTouch.type}
                           </p>
                         </div>
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <p className="text-sm text-gray-500">X Location</p>
-                          <p className="text-2xl font-bold">
+                        <div className='rounded-lg bg-gray-50 p-4'>
+                          <p className='text-sm text-gray-500'>X Location</p>
+                          <p className='text-2xl font-bold'>
                             {selectedTouch.location[0].toFixed(1)}
                           </p>
                         </div>
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <p className="text-sm text-gray-500">Y Location</p>
-                          <p className="text-2xl font-bold">
+                        <div className='rounded-lg bg-gray-50 p-4'>
+                          <p className='text-sm text-gray-500'>Y Location</p>
+                          <p className='text-2xl font-bold'>
                             {selectedTouch.location[1].toFixed(1)}
                           </p>
                         </div>
                       </>
                     ) : (
                       <>
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <p className="text-sm text-gray-500">Total Touches</p>
-                          <p className="text-2xl font-bold">{touches.length}</p>
+                        <div className='rounded-lg bg-gray-50 p-4'>
+                          <p className='text-sm text-gray-500'>Total Touches</p>
+                          <p className='text-2xl font-bold'>{touches.length}</p>
                         </div>
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <p className="text-sm text-gray-500">Shots</p>
-                          <p className="text-2xl font-bold">
-                            {touches.filter((t) => t.type === 'Shot').length}
+                        <div className='rounded-lg bg-gray-50 p-4'>
+                          <p className='text-sm text-gray-500'>Shots</p>
+                          <p className='text-2xl font-bold'>
+                            {touches.filter(t => t.type === 'Shot').length}
                           </p>
                         </div>
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <p className="text-sm text-gray-500">Assists</p>
-                          <p className="text-2xl font-bold">
-                            {touches.filter((t) => t.type === 'assist').length}
+                        <div className='rounded-lg bg-gray-50 p-4'>
+                          <p className='text-sm text-gray-500'>Assists</p>
+                          <p className='text-2xl font-bold'>
+                            {touches.filter(t => t.type === 'assist').length}
                           </p>
                         </div>
                       </>
@@ -221,9 +221,9 @@ const PlayerPerformance = () => {
         </div>
 
         {/* Team Switch */}
-        <div className="mt-4 flex justify-center">
+        <div className='mt-4 flex justify-center'>
           <button
-            className="rounded-full bg-gray-800 px-6 py-2 text-white shadow-lg hover:bg-gray-700"
+            className='rounded-full bg-gray-800 px-6 py-2 text-white shadow-lg hover:bg-gray-700'
             onClick={() =>
               setSelectedTeam(selectedTeam === 'team1' ? 'team2' : 'team1')
             }
