@@ -7,6 +7,8 @@ import MatchDetails from './components/MatchDetails';
 import PlayerPerformance from './components/PlayerPerformance';
 import './index.css';
 
+import SoccerPitch from './components/SoccerPitch';
+
 function App() {
   return (
     <Router>
@@ -22,6 +24,7 @@ function App() {
             element={<LeagueOverview />}
           />
           <Route path='/match/:matchId' element={<MatchDetails />} />
+          <Route path='/soccerpitch' element={<SoccerPitch />} />
         </Routes>
       </BaseLayout>
     </Router>

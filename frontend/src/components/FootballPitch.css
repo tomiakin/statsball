@@ -1,7 +1,7 @@
 .pitch-container {
   position: relative;
   width: 100%;
-  padding-top: 66.67%; /* 3:2 aspect ratio */
+  height: 100%; /* Use height directly */
   background-color: #3c8f40;
   border-radius: 4px;
   overflow: hidden;
