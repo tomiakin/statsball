@@ -47,12 +47,11 @@ This platform combines StatsBomb's rich football data with interactive visualiza
 
 - Django/Django REST Framework
 - StatsBomb Python API
-- SQLite Database
-- Python 3.8+
+- PostgreSQL
+- Python 3.10+
 
 ### Frontend
 
 - React
 - React Router
-- Bootstrap
-- Custom CSS
+- Tailwind CSS
