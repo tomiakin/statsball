@@ -5,7 +5,13 @@ from .views import (
     TouchDataView,
     LeagueMatchesView,
     CompetitionInfoView,
-    MatchLineupsView
+    MatchLineupsView,
+    PlayerMatchPassingView,
+    PlayerMatchShootingView,
+    PlayerMatchDefendingView,
+    PlayerMatchPossessionView,
+    GoalkeeperMatchView,
+    MatchInformationView
 )
 
 urlpatterns = [
@@ -34,4 +40,28 @@ urlpatterns = [
     path('api/lineups/<int:match_id>/',
          MatchLineupsView.as_view(),
          name='match-lineups'),
+
+    path('api/player-passing/<int:match_id>/<str:player_name>/',
+         PlayerMatchPassingView.as_view(),
+         name='passing-data'),
+
+    path('api/player-shooting/<int:match_id>/<str:player_name>/',
+         PlayerMatchShootingView.as_view(),
+         name='shooting-data'),
+
+    path('api/player-defending/<int:match_id>/<str:player_name>/',
+         PlayerMatchDefendingView.as_view(),
+         name='defending-data'),
+
+    path('api/player-poss/<int:match_id>/<str:player_name>/',
+         PlayerMatchPossessionView.as_view(),
+         name='poss-data'),
+
+    path('api/gk/<int:match_id>/<str:player_name>/',
+         GoalkeeperMatchView.as_view(),
+         name='gk-data'),
+
+     path('api/<int:match_id>/info/',
+         MatchInformationView.as_view(),
+         name='match-data'),
 ]

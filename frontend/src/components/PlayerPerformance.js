@@ -15,7 +15,7 @@ const PlayerPerformance = () => {
   const [selectedTouch, setSelectedTouch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isVertical, setIsVertical] = useState(true);
+  const [isVertical, setIsVertical] = useState(false);
 
   const statCategories = [
     {
