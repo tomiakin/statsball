@@ -35,7 +35,7 @@ const PlayerPerformance = () => {
       if (!matchId || !playerName) return;
       try {
         setLoading(true);
-        const data = await api.getTouchData(matchId, playerName);
+        const data = await api.getPlayerMatchTouches(matchId, playerName);
         setTouches(data);
         setError(null);
       } catch (err) {
