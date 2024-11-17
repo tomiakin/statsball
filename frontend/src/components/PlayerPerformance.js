@@ -1,34 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import * as api from '../services/api';
-import MatchTouches from './MatchTouches';
+import PlayerMatchTouches from './PlayerMatchTouches';
 import SoccerPitch from './SoccerPitch';
-import VerticalMatchTouches from './VerticalMatchTouches';
+import PlayerVertMatchTouches from './PlayerVertMatchTouches';
+import HalfVerticalPitch from './HalfVerticalPitch';
 import VerticalSoccerPitch from './VerticalSoccerPitch';
+
+// Configuration object that defines all visualizations
+// Update the container definitions in statCategories:
+
+const statCategories = [
+  {
+    id: 'summary',
+    name: 'Summary',
+    subStats: [
+      {
+        id: 'touches',
+        name: 'Touches',
+        container: ({ children }) => (
+          <div className="w-full">
+            <SoccerPitch>{children}</SoccerPitch>
+          </div>
+        ),
+        component: PlayerMatchTouches,
+      },
+      {
+        id: 'heatmap',
+        name: 'Heatmap',
+        container: ({ children }) => (
+          <div className="mx-auto w-full max-w-xl">
+            <VerticalSoccerPitch>{children}</VerticalSoccerPitch>
+          </div>
+        ),
+        component: PlayerVertMatchTouches,
+      },
+    ],
+  },
+  {
+    id: 'shooting',
+    name: 'Shooting',
+    subStats: [
+      {
+        id: 'shots',
+        name: 'Shots',
+        container: ({ children }) => (
+          <div className="mx-auto w-full max-w-xl">
+            <HalfVerticalPitch>{children}</HalfVerticalPitch>
+          </div>
+        ),
+        component: PlayerVertMatchTouches,
+      },
+    ],
+  },
+];
 
 const PlayerPerformance = () => {
   const { matchId, playerName } = useParams();
-  const [selectedStat, setSelectedStat] = useState('possession');
+  const [selectedStat, setSelectedStat] = useState('summary');
   const [selectedSubStat, setSelectedSubStat] = useState('touches');
   const [selectedTeam, setSelectedTeam] = useState('team1');
   const [touches, setTouches] = useState([]);
   const [selectedTouch, setSelectedTouch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isVertical, setIsVertical] = useState(false);
-
-  const statCategories = [
-    {
-      id: 'possession',
-      name: 'Possession',
-      subStats: ['touches', 'passes', 'ball control'],
-    },
-    {
-      id: 'attacking',
-      name: 'Attacking',
-      subStats: ['shots', 'goals', 'assists'],
-    },
-  ];
 
   useEffect(() => {
     const fetchTouchData = async () => {
@@ -51,6 +86,26 @@ const PlayerPerformance = () => {
 
   const handleTouchClick = touch => {
     setSelectedTouch(prev => (prev === touch ? null : touch));
+  };
+
+  const renderVisualization = () => {
+    const category = statCategories.find(cat => cat.id === selectedStat);
+    const subStat = category?.subStats.find(sub => sub.id === selectedSubStat);
+
+    if (!subStat) return null;
+
+    const { container: Container, component: Component } = subStat;
+
+    return (
+      <Container>
+        <Component
+          touches={touches}
+          onTouchClick={handleTouchClick}
+          selectedTouch={selectedTouch}
+          showLabels={false}
+        />
+      </Container>
+    );
   };
 
   return (
@@ -83,7 +138,10 @@ const PlayerPerformance = () => {
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
-                    onClick={() => setSelectedStat(category.id)}
+                    onClick={() => {
+                      setSelectedStat(category.id);
+                      setSelectedSubStat(category.subStats[0].id);
+                    }}
                   >
                     {category.name}
                   </button>
@@ -94,7 +152,7 @@ const PlayerPerformance = () => {
 
           {/* Second Row: Stats + Pitch */}
           <div className='col-span-12 lg:col-span-3'>
-            {/* More compact Match Overview */}
+            {/* Match Overview */}
             <div className='mb-4 rounded-lg bg-white p-4 shadow-lg'>
               <h3 className='mb-3 text-lg font-semibold'>Match Overview</h3>
               <div className='grid grid-cols-3 gap-2 lg:grid-cols-1'>
@@ -117,7 +175,7 @@ const PlayerPerformance = () => {
               </div>
             </div>
 
-            {/* Selected Touch - Same height as before but starts higher up */}
+            {/* Selected Touch */}
             <div className='rounded-lg bg-white p-4 shadow-lg'>
               <h3 className='mb-3 text-lg font-semibold'>Selected Touch</h3>
               <div className='grid gap-3'>
@@ -159,76 +217,34 @@ const PlayerPerformance = () => {
                     .find(cat => cat.id === selectedStat)
                     ?.subStats.map(subStat => (
                       <button
-                        key={subStat}
+                        key={subStat.id}
                         className={`whitespace-nowrap rounded-md px-4 py-2 ${
-                          selectedSubStat === subStat
+                          selectedSubStat === subStat.id
                             ? 'bg-blue-100 text-blue-700'
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
-                        onClick={() => setSelectedSubStat(subStat)}
+                        onClick={() => setSelectedSubStat(subStat.id)}
                       >
-                        {subStat}
+                        {subStat.name}
                       </button>
                     ))}
                 </div>
               </div>
 
               {/* Pitch container */}
-              {isVertical ? (
-                <div className='px-6 pb-6'>
-                  <div className='mx-auto aspect-[2/3] max-w-[400px]'>
-                    {loading ? (
-                      <div className='flex h-full items-center justify-center'>
-                        <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
-                      </div>
-                    ) : error ? (
-                      <div className='flex h-full items-center justify-center text-red-500'>
-                        {error}
-                      </div>
-                    ) : (
-                      selectedStat === 'possession' &&
-                      selectedSubStat === 'touches' && (
-                        <div className='relative h-full w-full'>
-                          <VerticalSoccerPitch>
-                            <VerticalMatchTouches
-                              touches={touches}
-                              onTouchClick={handleTouchClick}
-                              selectedTouch={selectedTouch}
-                              showLabels={false}
-                            />
-                          </VerticalSoccerPitch>
-                        </div>
-                      )
-                    )}
+              <div className='px-6 pb-6'>
+                {loading ? (
+                  <div className='flex h-full items-center justify-center'>
+                    <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
                   </div>
-                </div>
-              ) : (
-                <div className='aspect-[3/2] w-full px-6 pb-6'>
-                  {loading ? (
-                    <div className='flex h-full items-center justify-center'>
-                      <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
-                    </div>
-                  ) : error ? (
-                    <div className='flex h-full items-center justify-center text-red-500'>
-                      {error}
-                    </div>
-                  ) : (
-                    selectedStat === 'possession' &&
-                    selectedSubStat === 'touches' && (
-                      <div className='relative h-full w-full'>
-                        <SoccerPitch>
-                          <MatchTouches
-                            touches={touches}
-                            onTouchClick={handleTouchClick}
-                            selectedTouch={selectedTouch}
-                            showLabels={false}
-                          />
-                        </SoccerPitch>
-                      </div>
-                    )
-                  )}
-                </div>
-              )}
+                ) : error ? (
+                  <div className='flex h-full items-center justify-center text-red-500'>
+                    {error}
+                  </div>
+                ) : (
+                  renderVisualization()
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-const VerticalMatchTouches = ({
+const PlayerVertMatchTouches = ({
   touches = [],
   onTouchClick,
   selectedTouch,
@@ -85,4 +85,4 @@ const VerticalMatchTouches = ({
   );
 };
 
-export default VerticalMatchTouches;
+export default PlayerVertMatchTouches;

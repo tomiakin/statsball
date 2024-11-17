@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-const MatchTouches = ({
+const PlayerMatchTouches = ({
   touches = [],
   onTouchClick,
   selectedTouch,
@@ -84,4 +84,4 @@ const MatchTouches = ({
   );
 };
 
-export default MatchTouches;
+export default PlayerMatchTouches;
