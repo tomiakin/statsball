@@ -4,11 +4,9 @@ import * as api from '../services/api';
 import PlayerMatchTouches from './PlayerMatchTouches';
 import SoccerPitch from './SoccerPitch';
 import PlayerVertMatchTouches from './PlayerVertMatchTouches';
+import PlayerMatchShots from './PlayerMatchShots';
 import HalfVerticalPitch from './HalfVerticalPitch';
 import VerticalSoccerPitch from './VerticalSoccerPitch';
-
-// Configuration object that defines all visualizations
-// Update the container definitions in statCategories:
 
 const statCategories = [
   {
@@ -19,7 +17,7 @@ const statCategories = [
         id: 'touches',
         name: 'Touches',
         container: ({ children }) => (
-          <div className="w-full">
+          <div className='w-full'>
             <SoccerPitch>{children}</SoccerPitch>
           </div>
         ),
@@ -29,7 +27,7 @@ const statCategories = [
         id: 'heatmap',
         name: 'Heatmap',
         container: ({ children }) => (
-          <div className="mx-auto w-full max-w-xl">
+          <div className='mx-auto w-full max-w-xl'>
             <VerticalSoccerPitch>{children}</VerticalSoccerPitch>
           </div>
         ),
@@ -43,13 +41,13 @@ const statCategories = [
     subStats: [
       {
         id: 'shots',
-        name: 'Shots',
+        name: 'All Shots',
         container: ({ children }) => (
-          <div className="mx-auto w-full max-w-xl">
+          <div className='mx-auto w-full max-w-xl'>
             <HalfVerticalPitch>{children}</HalfVerticalPitch>
           </div>
         ),
-        component: PlayerVertMatchTouches,
+        component: PlayerMatchShots,
       },
     ],
   },
@@ -61,31 +59,150 @@ const PlayerPerformance = () => {
   const [selectedSubStat, setSelectedSubStat] = useState('touches');
   const [selectedTeam, setSelectedTeam] = useState('team1');
   const [touches, setTouches] = useState([]);
+  const [shootingData, setShootingData] = useState(null);
   const [selectedTouch, setSelectedTouch] = useState(null);
+  const [selectedShot, setSelectedShot] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTouchData = async () => {
+    const fetchData = async () => {
       if (!matchId || !playerName) return;
+      
+      setLoading(true);
+      setError(null);
+      
       try {
-        setLoading(true);
-        const data = await api.getPlayerMatchTouches(matchId, playerName);
-        setTouches(data);
-        setError(null);
+        // Always fetch touches as they're used in the summary
+        const touchData = await api.getPlayerMatchTouches(matchId, playerName);
+        setTouches(touchData);
+        
+        // Only fetch shooting data if we're in shooting view
+        if (selectedStat === 'shooting') {
+          const shotData = await api.getPlayerMatchShooting(matchId, playerName);
+          setShootingData(shotData);
+        }
       } catch (err) {
-        setError('Failed to load touch data');
-        setTouches([]);
+        console.error('Error fetching data:', err);
+        setError('Failed to load data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTouchData();
-  }, [matchId, playerName]);
+    fetchData();
+  }, [matchId, playerName, selectedStat]);
 
-  const handleTouchClick = touch => {
-    setSelectedTouch(prev => (prev === touch ? null : touch));
+  const handleTouchClick = item => {
+    if (selectedStat === 'shooting') {
+      setSelectedShot(prev => (prev === item ? null : item));
+    } else {
+      setSelectedTouch(prev => (prev === item ? null : item));
+    }
+  };
+
+  const renderStatDetails = () => {
+    if (selectedStat === 'shooting' && shootingData?.statistics) {
+      const stats = shootingData.statistics;
+      return (
+        <div className='grid grid-cols-3 gap-2 lg:grid-cols-1'>
+          <div className='rounded-lg bg-gray-50 p-3'>
+            <p className='text-xs text-gray-500'>Shot Conversion</p>
+            <p className='text-lg font-bold'>{`${stats.goals}/${stats.total_shots}`}</p>
+          </div>
+          <div className='rounded-lg bg-gray-50 p-3'>
+            <p className='text-xs text-gray-500'>On Target</p>
+            <p className='text-lg font-bold'>{`${stats.shots_on_target}/${stats.total_shots}`}</p>
+          </div>
+          <div className='rounded-lg bg-gray-50 p-3'>
+            <p className='text-xs text-gray-500'>Shot Accuracy</p>
+            <p className='text-lg font-bold'>{`${stats.shot_accuracy}%`}</p>
+          </div>
+          <div className='rounded-lg bg-gray-50 p-3'>
+            <p className='text-xs text-gray-500'>Total xG</p>
+            <p className='text-lg font-bold'>{stats.total_xg}</p>
+          </div>
+          <div className='rounded-lg bg-gray-50 p-3'>
+            <p className='text-xs text-gray-500'>Goals per xG</p>
+            <p className='text-lg font-bold'>{stats.goals_per_xg}</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Default summary stats
+    return (
+      <div className='grid grid-cols-3 gap-2 lg:grid-cols-1'>
+        <div className='rounded-lg bg-gray-50 p-3'>
+          <p className='text-xs text-gray-500'>Touches</p>
+          <p className='text-lg font-bold'>{touches.length}</p>
+        </div>
+        <div className='rounded-lg bg-gray-50 p-3'>
+          <p className='text-xs text-gray-500'>Shots</p>
+          <p className='text-lg font-bold'>
+            {touches.filter(t => t.type === 'Shot').length}
+          </p>
+        </div>
+        <div className='rounded-lg bg-gray-50 p-3'>
+          <p className='text-xs text-gray-500'>Assists</p>
+          <p className='text-lg font-bold'>
+            {touches.filter(t => t.type === 'assist').length}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSelectedItemDetails = () => {
+    if (selectedStat === 'shooting') {
+      return selectedShot ? (
+        <div className='grid grid-cols-3 gap-4'>
+          <div>
+            <p className='text-xs text-gray-500'>Shot Outcome</p>
+            <p className='text-sm font-bold'>{selectedShot.shot_outcome}</p>
+          </div>
+          <div>
+            <p className='text-xs text-gray-500'>Expected Goals (xG)</p>
+            <p className='text-sm font-bold'>
+              {selectedShot.shot_statsbomb_xg?.toFixed(2)}
+            </p>
+          </div>
+          <div>
+            <p className='text-xs text-gray-500'>Shot Type</p>
+            <p className='text-sm font-bold'>{selectedShot.shot_type}</p>
+          </div>
+        </div>
+      ) : (
+        <div className='text-center text-gray-500'>
+          Select a shot to see details
+        </div>
+      );
+    }
+
+    return selectedTouch ? (
+      <div className='grid grid-cols-3 gap-4'>
+        <div>
+          <p className='text-xs text-gray-500'>Touch Type</p>
+          <p className='text-sm font-bold'>{selectedTouch.type}</p>
+        </div>
+        <div>
+          <p className='text-xs text-gray-500'>X Location</p>
+          <p className='text-sm font-bold'>
+            {selectedTouch.location[0].toFixed(1)}
+          </p>
+        </div>
+        <div>
+          <p className='text-xs text-gray-500'>Y Location</p>
+          <p className='text-sm font-bold'>
+            {selectedTouch.location[1].toFixed(1)}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div className='text-center text-gray-500'>
+        Select a touch point to see details
+      </div>
+    );
   };
 
   const renderVisualization = () => {
@@ -96,14 +213,24 @@ const PlayerPerformance = () => {
 
     const { container: Container, component: Component } = subStat;
 
+    const componentProps = 
+      selectedStat === 'shooting' 
+        ? {
+            shots: shootingData?.shots || [],
+            onShotClick: handleTouchClick,
+            selectedShot,
+            showLabels: false
+          }
+        : {
+            touches,
+            onTouchClick: handleTouchClick,
+            selectedTouch,
+            showLabels: false
+          };
+
     return (
       <Container>
-        <Component
-          touches={touches}
-          onTouchClick={handleTouchClick}
-          selectedTouch={selectedTouch}
-          showLabels={false}
-        />
+        <Component {...componentProps} />
       </Container>
     );
   };
@@ -119,9 +246,7 @@ const PlayerPerformance = () => {
               <div className='flex items-center space-x-4'>
                 <div className='h-16 w-16 rounded-full bg-gray-200'></div>
                 <div>
-                  <h3 className='font-semibold'>
-                    {playerName || 'Player Name'}
-                  </h3>
+                  <h3 className='font-semibold'>{playerName || 'Player Name'}</h3>
                   <p className='text-sm text-gray-600'>Team • Nationality</p>
                 </div>
               </div>
@@ -141,6 +266,8 @@ const PlayerPerformance = () => {
                     onClick={() => {
                       setSelectedStat(category.id);
                       setSelectedSubStat(category.subStats[0].id);
+                      setSelectedTouch(null);
+                      setSelectedShot(null);
                     }}
                   >
                     {category.name}
@@ -152,58 +279,12 @@ const PlayerPerformance = () => {
 
           {/* Second Row: Stats + Pitch */}
           <div className='col-span-12 lg:col-span-3'>
-            {/* Match Overview */}
+            {/* Match Overview with conditional rendering based on selectedStat */}
             <div className='mb-4 rounded-lg bg-white p-4 shadow-lg'>
-              <h3 className='mb-3 text-lg font-semibold'>Match Overview</h3>
-              <div className='grid grid-cols-3 gap-2 lg:grid-cols-1'>
-                <div className='rounded-lg bg-gray-50 p-3'>
-                  <p className='text-xs text-gray-500'>Touches</p>
-                  <p className='text-lg font-bold'>{touches.length}</p>
-                </div>
-                <div className='rounded-lg bg-gray-50 p-3'>
-                  <p className='text-xs text-gray-500'>Shots</p>
-                  <p className='text-lg font-bold'>
-                    {touches.filter(t => t.type === 'Shot').length}
-                  </p>
-                </div>
-                <div className='rounded-lg bg-gray-50 p-3'>
-                  <p className='text-xs text-gray-500'>Assists</p>
-                  <p className='text-lg font-bold'>
-                    {touches.filter(t => t.type === 'assist').length}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Selected Touch */}
-            <div className='rounded-lg bg-white p-4 shadow-lg'>
-              <h3 className='mb-3 text-lg font-semibold'>Selected Touch</h3>
-              <div className='grid gap-3'>
-                {selectedTouch ? (
-                  <>
-                    <div className='rounded-lg bg-gray-50 p-3'>
-                      <p className='text-xs text-gray-500'>Touch Type</p>
-                      <p className='text-lg font-bold'>{selectedTouch.type}</p>
-                    </div>
-                    <div className='rounded-lg bg-gray-50 p-3'>
-                      <p className='text-xs text-gray-500'>X Location</p>
-                      <p className='text-lg font-bold'>
-                        {selectedTouch.location[0].toFixed(1)}
-                      </p>
-                    </div>
-                    <div className='rounded-lg bg-gray-50 p-3'>
-                      <p className='text-xs text-gray-500'>Y Location</p>
-                      <p className='text-lg font-bold'>
-                        {selectedTouch.location[1].toFixed(1)}
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className='text-center text-gray-500'>
-                    Select a touch point to see details
-                  </div>
-                )}
-              </div>
+              <h3 className='mb-3 text-lg font-semibold'>
+                {selectedStat === 'shooting' ? 'Shooting Overview' : 'Match Overview'}
+              </h3>
+              {renderStatDetails()}
             </div>
           </div>
 
@@ -242,7 +323,14 @@ const PlayerPerformance = () => {
                     {error}
                   </div>
                 ) : (
-                  renderVisualization()
+                  <>
+                    {renderVisualization()}
+                    
+                    {/* Selected Item Details below pitch */}
+                    <div className='mt-4 rounded-lg bg-gray-50 p-4'>
+                      {renderSelectedItemDetails()}
+                    </div>
+                  </>
                 )}
               </div>
             </div>
