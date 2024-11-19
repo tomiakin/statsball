@@ -6,7 +6,7 @@ const HalfVerticalPitch = ({ children, onPitchClick }) => (
   <BasePitch
     orientation={ORIENTATIONS.HALF_VERTICAL}
     {...COLOR_SCHEMES.LIGHT}
-    maxWidth="max-w-xl"
+    maxWidth='max-w-xl'
     onPitchClick={onPitchClick}
   >
     {children}

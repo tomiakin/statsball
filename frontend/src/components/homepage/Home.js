@@ -80,7 +80,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return null;  // BaseLayout will handle loading
+    return null; // BaseLayout will handle loading
   }
 
   return (

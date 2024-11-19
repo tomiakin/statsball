@@ -27,7 +27,10 @@ const CompetitionOverview = () => {
 
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const matchesData = await api.getCompetitionMatches(competitionId, seasonId);
+      const matchesData = await api.getCompetitionMatches(
+        competitionId,
+        seasonId,
+      );
       const sortedMatches = matchesData
         .filter(match => match?.match_date)
         .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));

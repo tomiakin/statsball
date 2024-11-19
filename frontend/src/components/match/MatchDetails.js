@@ -109,7 +109,9 @@ const MatchDetails = () => {
   }, [matchId]);
 
   const handlePlayerClick = playerName => {
-    navigate(`/player-performance/${matchId}/${encodeURIComponent(playerName)}`);
+    navigate(
+      `/player-performance/${matchId}/${encodeURIComponent(playerName)}`,
+    );
   };
 
   if (loading) {

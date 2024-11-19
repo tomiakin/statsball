@@ -6,7 +6,7 @@ const VerticalSoccerPitch = ({ children, onPitchClick }) => (
   <BasePitch
     orientation={ORIENTATIONS.VERTICAL}
     {...COLOR_SCHEMES.LIGHT}
-    maxWidth="max-w-xl"
+    maxWidth='max-w-xl'
     onPitchClick={onPitchClick}
   >
     {children}

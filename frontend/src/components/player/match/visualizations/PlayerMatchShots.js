@@ -34,16 +34,23 @@ const PlayerMatchShots = ({
     };
   };
 
-  const getLineStartPoint = (startX, startY, endX, endY, radius, isSelected) => {
+  const getLineStartPoint = (
+    startX,
+    startY,
+    endX,
+    endY,
+    radius,
+    isSelected,
+  ) => {
     const dx = endX - startX;
     const dy = endY - startY;
     const length = Math.sqrt(dx * dx + dy * dy);
     // When selected, start exactly at the outline radius
     const totalRadius = radius + (isSelected ? 0.5 : 0);
-    
+
     return {
-      x: startX + (dx / length * totalRadius),
-      y: startY + (dy / length * totalRadius)
+      x: startX + (dx / length) * totalRadius,
+      y: startY + (dy / length) * totalRadius,
     };
   };
 
@@ -68,29 +75,24 @@ const PlayerMatchShots = ({
                 cx={x}
                 cy={y}
                 r={radius + 0.6}
-                fill="none"
-                stroke="rgb(255, 0, 0)"
-                strokeWidth="0.4"
+                fill='none'
+                stroke='rgb(255, 0, 0)'
+                strokeWidth='0.4'
               />
             )}
 
             {/* Shot circle */}
-            <circle
-              cx={x}
-              cy={y}
-              r={radius}
-              style={shotStyle}
-            />
+            <circle cx={x} cy={y} r={radius} style={shotStyle} />
 
             {/* Label */}
             {showLabels && (
               <text
                 x={x}
                 y={y - radius - 0.5}
-                fontSize="2"
+                fontSize='2'
                 fill={shotStyle.stroke}
-                textAnchor="middle"
-                alignmentBaseline="bottom"
+                textAnchor='middle'
+                alignmentBaseline='bottom'
               >
                 {index + 1}
               </text>
@@ -102,15 +104,22 @@ const PlayerMatchShots = ({
       {/* Shot trajectories */}
       {shots.map((shot, index) => {
         if (!shot.shot_end_location) return null;
-        
+
         const startX = shot.location[1];
         const startY = 120 - shot.location[0];
         const endX = shot.shot_end_location[1];
         const endY = 120 - shot.shot_end_location[0];
         const isSelected = selectedShot?.id === shot.id;
         const radius = getShotRadius(shot.shot_statsbomb_xg);
-        
-        const startPoint = getLineStartPoint(startX, startY, endX, endY, radius, isSelected);
+
+        const startPoint = getLineStartPoint(
+          startX,
+          startY,
+          endX,
+          endY,
+          radius,
+          isSelected,
+        );
 
         return (
           <line
@@ -120,7 +129,7 @@ const PlayerMatchShots = ({
             x2={endX}
             y2={endY}
             stroke={isSelected ? 'rgb(255, 0, 0)' : 'rgba(156, 163, 175, 0.4)'}
-            strokeWidth="0.4"
+            strokeWidth='0.4'
             strokeDasharray={isSelected ? undefined : '0.5'}
           />
         );

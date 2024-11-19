@@ -7,8 +7,6 @@ import MatchDetails from './components/match/MatchDetails';
 import PlayerMatchPerformance from './components/player/match/PlayerMatchPerformance';
 import './index.css';
 
-
-
 function App() {
   return (
     <Router>
@@ -24,7 +22,6 @@ function App() {
             element={<CompetitionOverview />}
           />
           <Route path='/match/:matchId' element={<MatchDetails />} />
-
         </Routes>
       </BaseLayout>
     </Router>

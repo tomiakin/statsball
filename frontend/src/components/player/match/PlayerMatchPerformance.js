@@ -72,18 +72,21 @@ const PlayerMatchPerformance = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!matchId || !playerName) return;
-      
+
       setLoading(true);
       setError(null);
-      
+
       try {
         // Always fetch touches as they're used in the summary
         const touchData = await api.getPlayerMatchTouches(matchId, playerName);
         setTouches(touchData);
-        
+
         // Only fetch shooting data if we're in shooting view
         if (selectedStat === 'shooting') {
-          const shotData = await api.getPlayerMatchShooting(matchId, playerName);
+          const shotData = await api.getPlayerMatchShooting(
+            matchId,
+            playerName,
+          );
           setShootingData(shotData);
         }
       } catch (err) {
@@ -217,19 +220,19 @@ const PlayerMatchPerformance = () => {
 
     const { container: Container, component: Component } = subStat;
 
-    const componentProps = 
-      selectedStat === 'shooting' 
+    const componentProps =
+      selectedStat === 'shooting'
         ? {
             shots: shootingData?.shots || [],
             onShotClick: handleTouchClick,
             selectedShot,
-            showLabels: false
+            showLabels: false,
           }
         : {
             touches,
             onTouchClick: handleTouchClick,
             selectedTouch,
-            showLabels: false
+            showLabels: false,
           };
 
     return (
@@ -250,7 +253,9 @@ const PlayerMatchPerformance = () => {
               <div className='flex items-center space-x-4'>
                 <div className='h-16 w-16 rounded-full bg-gray-200'></div>
                 <div>
-                  <h3 className='font-semibold'>{playerName || 'Player Name'}</h3>
+                  <h3 className='font-semibold'>
+                    {playerName || 'Player Name'}
+                  </h3>
                   <p className='text-sm text-gray-600'>Team • Nationality</p>
                 </div>
               </div>
@@ -286,7 +291,9 @@ const PlayerMatchPerformance = () => {
             {/* Match Overview with conditional rendering based on selectedStat */}
             <div className='mb-4 rounded-lg bg-white p-4 shadow-lg'>
               <h3 className='mb-3 text-lg font-semibold'>
-                {selectedStat === 'shooting' ? 'Shooting Overview' : 'Match Overview'}
+                {selectedStat === 'shooting'
+                  ? 'Shooting Overview'
+                  : 'Match Overview'}
               </h3>
               {renderStatDetails()}
             </div>
@@ -329,7 +336,7 @@ const PlayerMatchPerformance = () => {
                 ) : (
                   <>
                     {renderVisualization()}
-                    
+
                     {/* Selected Item Details below pitch */}
                     <div className='mt-4 rounded-lg bg-gray-50 p-4'>
                       {renderSelectedItemDetails()}
