@@ -1,14 +1,14 @@
 import React from 'react';
 import { statCategories } from '../config/statConfig';
 
-export const Visualization = ({ 
-  selectedStat, 
-  selectedSubStat, 
+export const Visualization = ({
+  selectedStat,
+  selectedSubStat,
   shootingData,
   touches,
   selectedTouch,
   selectedShot,
-  onItemClick 
+  onItemClick,
 }) => {
   const category = statCategories.find(cat => cat.id === selectedStat);
   const subStat = category?.subStats.find(sub => sub.id === selectedSubStat);

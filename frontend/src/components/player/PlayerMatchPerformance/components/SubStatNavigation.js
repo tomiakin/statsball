@@ -1,9 +1,14 @@
 import React from 'react';
 import { statCategories } from '../config/statConfig';
 
-export const SubStatNavigation = ({ selectedStat, selectedSubStat, onSubStatChange }) => {
-  const subStats = statCategories.find(cat => cat.id === selectedStat)?.subStats || [];
-  
+export const SubStatNavigation = ({
+  selectedStat,
+  selectedSubStat,
+  onSubStatChange,
+}) => {
+  const subStats =
+    statCategories.find(cat => cat.id === selectedStat)?.subStats || [];
+
   return (
     <div className='mb-4 flex space-x-4 overflow-x-auto'>
       {subStats.map(subStat => (

@@ -33,7 +33,10 @@ const PlayerMatchPerformance = () => {
 
         // Only fetch shooting data if we're in shooting view
         if (selectedStat === 'shooting') {
-          const shotData = await api.getPlayerMatchShooting(matchId, playerName);
+          const shotData = await api.getPlayerMatchShooting(
+            matchId,
+            playerName,
+          );
           setShootingData(shotData);
         }
       } catch (err) {
@@ -47,14 +50,14 @@ const PlayerMatchPerformance = () => {
     fetchData();
   }, [matchId, playerName, selectedStat]);
 
-  const handleStatChange = (category) => {
+  const handleStatChange = category => {
     setSelectedStat(category.id);
     setSelectedSubStat(category.subStats[0].id);
     setSelectedItem(null);
   };
 
-  const handleItemClick = (item) => {
-    setSelectedItem(prev => prev === item ? null : item);
+  const handleItemClick = item => {
+    setSelectedItem(prev => (prev === item ? null : item));
   };
 
   return (
@@ -63,9 +66,9 @@ const PlayerMatchPerformance = () => {
         <div className='grid grid-cols-12 gap-4'>
           <div className='col-span-12 grid grid-cols-12 gap-4'>
             <PlayerProfile playerName={playerName} />
-            <StatNavigation 
-              selectedStat={selectedStat} 
-              onStatChange={handleStatChange} 
+            <StatNavigation
+              selectedStat={selectedStat}
+              onStatChange={handleStatChange}
             />
           </div>
 
@@ -103,8 +106,12 @@ const PlayerMatchPerformance = () => {
                       selectedSubStat={selectedSubStat}
                       shootingData={shootingData}
                       touches={touches}
-                      selectedTouch={selectedStat === 'summary' ? selectedItem : null}
-                      selectedShot={selectedStat === 'shooting' ? selectedItem : null}
+                      selectedTouch={
+                        selectedStat === 'summary' ? selectedItem : null
+                      }
+                      selectedShot={
+                        selectedStat === 'shooting' ? selectedItem : null
+                      }
                       onItemClick={handleItemClick}
                     />
 
@@ -124,7 +131,9 @@ const PlayerMatchPerformance = () => {
         <div className='mt-4 flex justify-center'>
           <button
             className='rounded-full bg-gray-800 px-6 py-2 text-white shadow-lg hover:bg-gray-700'
-            onClick={() => setSelectedTeam(prev => prev === 'team1' ? 'team2' : 'team1')}
+            onClick={() =>
+              setSelectedTeam(prev => (prev === 'team1' ? 'team2' : 'team1'))
+            }
           >
             Switch to {selectedTeam === 'team1' ? 'Team 2' : 'Team 1'}
           </button>
