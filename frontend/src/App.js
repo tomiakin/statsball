@@ -4,7 +4,7 @@ import Home from './components/homepage/Home';
 import CompetitionOverview from './components/competition/CompetitionOverview';
 import BaseLayout from './components/common/BaseLayout';
 import MatchDetails from './components/match/MatchDetails';
-import PlayerMatchPerformance from './components/player/match/PlayerMatchPerformance';
+import PlayerMatchPerformance from './components/player/PlayerMatchPerformance/PlayerMatchPerformance'
 import './index.css';
 
 function App() {
