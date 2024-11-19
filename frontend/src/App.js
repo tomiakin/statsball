@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import LeagueOverview from './components/LeagueOverview';
-import BaseLayout from './components/BaseLayout';
-import MatchDetails from './components/MatchDetails';
-import PlayerPerformance from './components/PlayerPerformance';
+import Home from './components/homepage/Home';
+import CompetitionOverview from './components/competition/CompetitionOverview';
+import BaseLayout from './components/common/BaseLayout';
+import MatchDetails from './components/match/MatchDetails';
+import PlayerMatchPerformance from './components/player/match/PlayerMatchPerformance';
 import './index.css';
 
-import SoccerPitch from './components/SoccerPitch';
+
 
 function App() {
   return (
@@ -17,14 +17,14 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route
             path='/player-performance/:matchId/:playerName'
-            element={<PlayerPerformance />}
+            element={<PlayerMatchPerformance />}
           />
           <Route
-            path='/league/:leagueId/:seasonId'
-            element={<LeagueOverview />}
+            path='/league/:competitionId/:seasonId'
+            element={<CompetitionOverview />}
           />
           <Route path='/match/:matchId' element={<MatchDetails />} />
-          <Route path='/soccerpitch' element={<SoccerPitch />} />
+
         </Routes>
       </BaseLayout>
     </Router>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as api from '../services/api';
+import * as api from '../../services/api';
 
 const Home = () => {
   const [leagues, setLeagues] = useState([]);
@@ -80,12 +80,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return (
-      <div className='flex h-screen items-center justify-center'>
-        <div className='h-8 w-8 animate-spin rounded-full border-4 border-dotted border-blue-500'></div>
-        <span className='sr-only'>Loading...</span>
-      </div>
-    );
+    return null;  // BaseLayout will handle loading
   }
 
   return (

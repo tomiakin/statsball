@@ -1,6 +1,6 @@
 # api/urls/competition.py
 from django.urls import path
-from ..views.competition.matches import LeagueMatchesView
+from ..views.competition.matches import CompetitionMatchesView
 from ..views.competition.info import (
     CompetitionsView,
     SeasonsView,
@@ -17,7 +17,7 @@ urlpatterns = [
          name='competition-seasons'),
     
     path('matches/<int:competition_id>/<int:season_id>/',
-         LeagueMatchesView.as_view(),
+         CompetitionMatchesView.as_view(),
          name='competition-matches'),
     
     path('competition-info/<int:competition_id>/<int:season_id>/',

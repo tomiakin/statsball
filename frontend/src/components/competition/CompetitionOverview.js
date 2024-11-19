@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import * as api from '../services/api';
+import * as api from '../../services/api';
 
-const LeagueOverview = () => {
-  const { leagueId, seasonId } = useParams();
+const CompetitionOverview = () => {
+  const { competitionId, seasonId } = useParams();
   const [allMatches, setAllMatches] = useState([]);
   const [displayedMatches, setDisplayedMatches] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -22,12 +22,12 @@ const LeagueOverview = () => {
       setLoading(true);
       setError(null);
 
-      const leagueData = await api.getCompetitionInfo(leagueId, seasonId);
+      const leagueData = await api.getCompetitionInfo(competitionId, seasonId);
       setLeagueInfo(leagueData);
 
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const matchesData = await api.getCompetitionMatches(leagueId, seasonId);
+      const matchesData = await api.getCompetitionMatches(competitionId, seasonId);
       const sortedMatches = matchesData
         .filter(match => match?.match_date)
         .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
@@ -50,14 +50,14 @@ const LeagueOverview = () => {
     } finally {
       setLoading(false);
     }
-  }, [leagueId, seasonId]);
+  }, [competitionId, seasonId]);
 
   useEffect(() => {
-    if (leagueId && seasonId) {
+    if (competitionId && seasonId) {
       const timer = setTimeout(loadData, 100);
       return () => clearTimeout(timer);
     }
-  }, [leagueId, seasonId, loadData]);
+  }, [competitionId, seasonId, loadData]);
 
   const indexOfLastMatch = currentPage * matchesPerPage;
   const indexOfFirstMatch = indexOfLastMatch - matchesPerPage;
@@ -242,4 +242,4 @@ const LeagueOverview = () => {
   );
 };
 
-export default LeagueOverview;
+export default CompetitionOverview;

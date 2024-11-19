@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import * as api from '../services/api';
+import * as api from '../../services/api';
 
 const TeamLineup = ({ teamName, players, onPlayerClick }) => {
   const getPlayerPosition = player => {
@@ -109,26 +109,15 @@ const MatchDetails = () => {
   }, [matchId]);
 
   const handlePlayerClick = playerName => {
-    // Updated navigation to use the new player-performance route
-    navigate(
-      `/player-performance/${matchId}/${encodeURIComponent(playerName)}`,
-    );
+    navigate(`/player-performance/${matchId}/${encodeURIComponent(playerName)}`);
   };
 
   if (loading) {
-    return (
-      <div className='flex min-h-[60vh] items-center justify-center'>
-        <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
-      </div>
-    );
+    return null; // BaseLayout will handle loading
   }
 
   if (error) {
-    return (
-      <div className='container mx-auto px-4'>
-        <div className='mt-4 rounded bg-red-100 p-4 text-red-700'>{error}</div>
-      </div>
-    );
+    return null; // BaseLayout will handle error
   }
 
   return (

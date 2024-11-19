@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import * as api from '../services/api';
-import PlayerMatchTouches from './PlayerMatchTouches';
-import SoccerPitch from './SoccerPitch';
-import PlayerVertMatchTouches from './PlayerVertMatchTouches';
-import PlayerMatchShots from './PlayerMatchShots';
-import HalfVerticalPitch from './HalfVerticalPitch';
-import VerticalSoccerPitch from './VerticalSoccerPitch';
+import * as api from '../../../services/api';
+
+// Pitch imports
+import SoccerPitch from '../../pitch/SoccerPitch';
+import VerticalSoccerPitch from '../../pitch/VerticalSoccerPitch';
+import HalfVerticalPitch from '../../pitch/HalfVerticalPitch';
+
+// To render on pitch
+import PlayerMatchTouches from './visualizations/PlayerMatchTouches';
+import PlayerVertMatchTouches from './visualizations/PlayerVertMatchTouches';
+import PlayerMatchShots from './visualizations/PlayerMatchShots';
 
 const statCategories = [
   {
@@ -53,7 +57,7 @@ const statCategories = [
   },
 ];
 
-const PlayerPerformance = () => {
+const PlayerMatchPerformance = () => {
   const { matchId, playerName } = useParams();
   const [selectedStat, setSelectedStat] = useState('summary');
   const [selectedSubStat, setSelectedSubStat] = useState('touches');
@@ -353,4 +357,4 @@ const PlayerPerformance = () => {
   );
 };
 
-export default PlayerPerformance;
+export default PlayerMatchPerformance;
