@@ -94,16 +94,16 @@ const CompetitionOverview = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading competition data..." />;
+    return <LoadingSpinner message='Loading competition data...' />;
   }
 
   if (error) {
     return (
-      <ErrorMessage 
+      <ErrorMessage
         message={error}
         action={{
           label: 'Try Again',
-          onClick: loadData
+          onClick: loadData,
         }}
       />
     );
@@ -113,8 +113,8 @@ const CompetitionOverview = () => {
     return (
       <EmptyState
         icon={Calendar}
-        title="No Matches Found"
-        message="There are no matches available for this competition yet."
+        title='No Matches Found'
+        message='There are no matches available for this competition yet.'
       />
     );
   }

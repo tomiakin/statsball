@@ -2,14 +2,13 @@
 import React from 'react';
 import Navbar from './Navbar';
 
-const BaseLayout = ({
-  children,
-  className = '',
-}) => {
+const BaseLayout = ({ children, className = '' }) => {
   return (
     <div className='min-h-screen bg-gray-100'>
       <Navbar />
-      <main className={`min-h-[calc(100vh-4rem)] container mx-auto px-4 py-6 sm:px-6 lg:px-8 ${className}`}>
+      <main
+        className={`container mx-auto min-h-[calc(100vh-4rem)] px-4 py-6 sm:px-6 lg:px-8 ${className}`}
+      >
         {children}
       </main>
       <footer className='mt-auto border-t border-gray-200 bg-white py-4 dark:border-gray-800 dark:bg-gray-800'>

@@ -109,7 +109,7 @@ const MatchDetails = () => {
     fetchLineups();
   }, [matchId]);
 
-  const handlePlayerClick = (player) => {
+  const handlePlayerClick = player => {
     if (!player || !player.player_name) {
       console.error('Invalid player data:', player);
       return;
@@ -126,14 +126,14 @@ const MatchDetails = () => {
             jerseyNumber: player.jersey_number,
             team: player.team_name,
             position: player.positions?.[0]?.position,
-          }
-        }
-      }
+          },
+        },
+      },
     );
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading match lineup..." />;
+    return <LoadingSpinner message='Loading match lineup...' />;
   }
 
   if (error) {
@@ -166,7 +166,7 @@ const MatchDetails = () => {
           teamName={lineups.homeTeam}
           players={lineups.home.map(player => ({
             ...player,
-            team_name: lineups.homeTeam
+            team_name: lineups.homeTeam,
           }))}
           onPlayerClick={handlePlayerClick}
         />
@@ -174,7 +174,7 @@ const MatchDetails = () => {
           teamName={lineups.awayTeam}
           players={lineups.away.map(player => ({
             ...player,
-            team_name: lineups.awayTeam
+            team_name: lineups.awayTeam,
           }))}
           onPlayerClick={handlePlayerClick}
         />

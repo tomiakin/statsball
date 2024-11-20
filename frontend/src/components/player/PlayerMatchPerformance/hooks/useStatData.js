@@ -19,37 +19,46 @@ export const useStatData = (matchId, playerName, selectedStat) => {
 
       try {
         let result;
-        
+
         switch (selectedStat) {
           case STAT_TYPES.SUMMARY: {
-            const touchesData = await api.getPlayerMatchTouches(matchId, playerName);
-            result = { 
-              touches: touchesData 
+            const touchesData = await api.getPlayerMatchTouches(
+              matchId,
+              playerName,
+            );
+            result = {
+              touches: touchesData,
             };
             break;
           }
-            
+
           case STAT_TYPES.SHOOTING: {
             result = await api.getPlayerMatchShooting(matchId, playerName);
             break;
           }
-            
+
           case STAT_TYPES.PASSING: {
-            const passingData = await api.getPlayerMatchPassing(matchId, playerName);
-            result = { 
-              passes: passingData 
+            const passingData = await api.getPlayerMatchPassing(
+              matchId,
+              playerName,
+            );
+            result = {
+              passes: passingData,
             };
             break;
           }
-            
+
           case STAT_TYPES.DEFENDING: {
-            const defendingData = await api.getPlayerMatchDefending(matchId, playerName);
-            result = { 
-              actions: defendingData 
+            const defendingData = await api.getPlayerMatchDefending(
+              matchId,
+              playerName,
+            );
+            result = {
+              actions: defendingData,
             };
             break;
           }
-            
+
           default:
             throw new Error(`Invalid stat type: ${selectedStat}`);
         }
@@ -73,6 +82,6 @@ export const useStatData = (matchId, playerName, selectedStat) => {
     refresh: () => {
       setData(null);
       setLoading(true);
-    }
+    },
   };
 };

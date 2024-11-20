@@ -27,7 +27,7 @@ export const Visualization = ({
           selectedShot: selectedItem,
           showLabels: false,
         };
-      
+
       case STAT_TYPES.SUMMARY:
         return {
           touches: data?.touches || [], // Fix: Access touches from data object
@@ -35,7 +35,7 @@ export const Visualization = ({
           selectedTouch: selectedItem,
           showLabels: false,
         };
-        
+
       case STAT_TYPES.PASSING:
         return {
           passes: data?.passes || [],
@@ -43,7 +43,7 @@ export const Visualization = ({
           selectedPass: selectedItem,
           showLabels: false,
         };
-        
+
       case STAT_TYPES.DEFENDING:
         return {
           actions: data?.actions || [],

@@ -64,7 +64,9 @@ export const StatOverview = ({ selectedStat, data }) => {
   return (
     <div className='mb-4 rounded-lg bg-white p-4 shadow-lg'>
       <h3 className='mb-3 text-lg font-semibold'>
-        {selectedStat === STAT_TYPES.SHOOTING ? 'Shooting Overview' : 'Match Overview'}
+        {selectedStat === STAT_TYPES.SHOOTING
+          ? 'Shooting Overview'
+          : 'Match Overview'}
       </h3>
       {renderStats()}
     </div>

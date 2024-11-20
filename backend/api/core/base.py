@@ -2,12 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 import logging
 import numpy as np
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 class BaseStatsBombView(APIView):
-
-    # Common event columns used across different views
     event_columns = [
         'id', 'index', 'period', 'timestamp', 'minute', 'second', 'type',
         'possession', 'possession_team', 'play_pattern', 'team', 'player',
@@ -27,20 +26,21 @@ class BaseStatsBombView(APIView):
         # Make a copy to avoid modifying the original
         df = df.copy()
 
-        # Handle the specific columns we know might have issues
-        if 'last_updated_360' in df.columns:
-            df['last_updated_360'] = df['last_updated_360'].replace({
-                                                                    np.nan: None})
+        # First, handle all numeric columns
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        for col in numeric_cols:
+            df[col] = df[col].replace({
+                np.nan: None,
+                np.inf: None,
+                -np.inf: None
+            })
 
-        if 'referee' in df.columns:
-            df['referee'] = df['referee'].replace({np.nan: None})
+        # Handle all object/string columns
+        object_cols = df.select_dtypes(include=['object']).columns
+        for col in object_cols:
+            df[col] = df[col].replace({np.nan: None})
 
-        # Ensure all numeric columns are properly handled
-        for col in df.select_dtypes(include=np.number).columns:
-            df[col] = df[col].replace(
-                {np.nan: None, np.inf: None, -np.inf: None})
-
-        # Convert to dictionary and handle any remaining issues
+        # Convert DataFrame to records
         records = df.to_dict(orient='records')
 
         # Final cleanup to ensure JSON serialization will work
@@ -48,16 +48,20 @@ class BaseStatsBombView(APIView):
         for record in records:
             clean_record = {}
             for key, value in record.items():
-                # Convert numpy integers to Python integers
                 if isinstance(value, np.integer):
                     clean_record[key] = int(value)
-                # Convert numpy floats to Python floats or None
                 elif isinstance(value, np.floating):
-                    clean_record[key] = float(
-                        value) if not np.isnan(value) else None
-                # Keep everything else as is
+                    clean_record[key] = float(value) if not np.isnan(value) else None
+                elif isinstance(value, (np.ndarray, list)):
+                    # Handle array-like values
+                    if isinstance(value, np.ndarray):
+                        value = value.tolist()
+                    clean_record[key] = [
+                        None if isinstance(x, (float, np.floating)) and np.isnan(x)
+                        else x for x in value
+                    ]
                 else:
-                    clean_record[key] = value
+                    clean_record[key] = None if pd.isna(value) else value
             clean_records.append(clean_record)
 
         return clean_records

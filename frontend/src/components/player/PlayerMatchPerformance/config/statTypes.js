@@ -23,7 +23,7 @@ export const SUB_STAT_TYPES = {
 };
 
 // Helper function to get all sub-stats for a given stat type
-export const getSubStatTypes = (statType) => {
+export const getSubStatTypes = statType => {
   switch (statType) {
     case STAT_TYPES.SUMMARY:
       return SUB_STAT_TYPES.SUMMARY;
@@ -39,7 +39,7 @@ export const getSubStatTypes = (statType) => {
 };
 
 // Helper function to get default sub-stat for a stat type
-export const getDefaultSubStat = (statType) => {
+export const getDefaultSubStat = statType => {
   switch (statType) {
     case STAT_TYPES.SUMMARY:
       return SUB_STAT_TYPES.SUMMARY.TOUCHES;

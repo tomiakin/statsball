@@ -81,16 +81,16 @@ const Home = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading leagues..." />;
+    return <LoadingSpinner message='Loading leagues...' />;
   }
 
   if (error) {
     return (
-      <ErrorMessage 
-        message={error} 
+      <ErrorMessage
+        message={error}
         action={{
           label: 'Try Again',
-          onClick: () => window.location.reload()
+          onClick: () => window.location.reload(),
         }}
       />
     );

@@ -8,13 +8,15 @@ import PlayerMatchShots from '../visualizations/PlayerMatchShots';
 
 export const statCategories = [
   {
-    id: STAT_TYPES.SUMMARY,  // Using new enum
+    id: STAT_TYPES.SUMMARY, // Using new enum
     name: 'Summary',
     subStats: [
       {
         id: 'touches',
         name: 'Touches',
-        container: ({ children }) => (  // Keeping your working container setup
+        container: (
+          { children }, // Keeping your working container setup
+        ) => (
           <div className='w-full'>
             <SoccerPitch>{children}</SoccerPitch>
           </div>
@@ -30,11 +32,11 @@ export const statCategories = [
           </div>
         ),
         component: PlayerVertMatchTouches,
-      }
-    ]
+      },
+    ],
   },
   {
-    id: STAT_TYPES.SHOOTING,  // Using new enum
+    id: STAT_TYPES.SHOOTING, // Using new enum
     name: 'Shooting',
     subStats: [
       {
@@ -46,8 +48,8 @@ export const statCategories = [
           </div>
         ),
         component: PlayerMatchShots,
-      }
-    ]
+      },
+    ],
   },
   // New categories
   {
@@ -64,7 +66,7 @@ export const statCategories = [
         ),
         component: PlayerMatchTouches, // You'll need to create passing specific components
       },
-    ]
+    ],
   },
   {
     id: STAT_TYPES.DEFENDING,
@@ -80,10 +82,10 @@ export const statCategories = [
         ),
         component: PlayerMatchTouches, // You'll need to create defending specific components
       },
-    ]
-  }
+    ],
+  },
 ];
 
-export const getStatConfig = (statType) => {
+export const getStatConfig = statType => {
   return statCategories.find(config => config.id === statType);
 };
