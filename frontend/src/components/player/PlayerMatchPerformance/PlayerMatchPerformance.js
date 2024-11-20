@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import * as api from '../../../services/api';
+import React, { useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { STAT_TYPES, getDefaultSubStat } from './config/statTypes';
+import { useStatData } from './hooks/useStatData';
 import { PlayerProfile } from './components/PlayerProfile';
 import { StatNavigation } from './components/StatNavigation';
 import { StatOverview } from './components/StatOverview';
@@ -10,93 +11,76 @@ import { Visualization } from './components/Visualization';
 
 const PlayerMatchPerformance = () => {
   const { matchId, playerName } = useParams();
-  const [selectedStat, setSelectedStat] = useState('summary');
-  const [selectedSubStat, setSelectedSubStat] = useState('touches');
+  const location = useLocation();
+  const playerInfo = location.state?.playerInfo;
+  
+  const [selectedStat, setSelectedStat] = useState(STAT_TYPES.SUMMARY);
+  const [selectedSubStat, setSelectedSubStat] = useState(getDefaultSubStat(STAT_TYPES.SUMMARY));
   const [selectedTeam, setSelectedTeam] = useState('team1');
-  const [touches, setTouches] = useState([]);
-  const [shootingData, setShootingData] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!matchId || !playerName) return;
+  // Use our custom hook to fetch data
+  const { data, loading, error } = useStatData(matchId, playerInfo?.playerName || playerName, selectedStat);
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        // Always fetch touches as they're used in the summary
-        const touchData = await api.getPlayerMatchTouches(matchId, playerName);
-        setTouches(touchData);
-
-        // Only fetch shooting data if we're in shooting view
-        if (selectedStat === 'shooting') {
-          const shotData = await api.getPlayerMatchShooting(
-            matchId,
-            playerName,
-          );
-          setShootingData(shotData);
-        }
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to load data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [matchId, playerName, selectedStat]);
-
-  const handleStatChange = category => {
+  const handleStatChange = (category) => {
     setSelectedStat(category.id);
-    setSelectedSubStat(category.subStats[0].id);
+    // Reset to default sub-stat when changing main stat
+    setSelectedSubStat(getDefaultSubStat(category.id));
+    // Clear selected item when changing stats
     setSelectedItem(null);
   };
 
-  const handleItemClick = item => {
-    setSelectedItem(prev => (prev === item ? null : item));
+  const handleSubStatChange = (subStatId) => {
+    setSelectedSubStat(subStatId);
+    // Optionally clear selected item when changing sub-stat
+    setSelectedItem(null);
+  };
+
+  const handleItemClick = (item) => {
+    setSelectedItem(prev => prev === item ? null : item);
   };
 
   return (
-    <div className='min-h-screen bg-gray-100'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='grid grid-cols-12 gap-4'>
-          <div className='col-span-12 grid grid-cols-12 gap-4'>
-            <PlayerProfile playerName={playerName} />
+    <div className="min-h-screen bg-gray-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-12 gap-4">
+          {/* Profile and Navigation Section */}
+          <div className="col-span-12 grid grid-cols-12 gap-4">
+            <PlayerProfile /> {/* Removed playerName prop since we access via useLocation now */}
             <StatNavigation
               selectedStat={selectedStat}
               onStatChange={handleStatChange}
             />
           </div>
 
-          <div className='col-span-12 lg:col-span-3'>
+          {/* Stats Overview Section */}
+          <div className="col-span-12 lg:col-span-3">
             <StatOverview
               selectedStat={selectedStat}
-              shootingData={shootingData}
-              touches={touches}
+              data={data}
             />
           </div>
 
-          <div className='col-span-12 lg:col-span-9'>
-            <div className='rounded-lg bg-white shadow-lg'>
-              <div className='px-6 pt-4'>
+          {/* Main Visualization Section */}
+          <div className="col-span-12 lg:col-span-9">
+            <div className="rounded-lg bg-white shadow-lg">
+              {/* Sub-stat Navigation */}
+              <div className="px-6 pt-4">
                 <SubStatNavigation
                   selectedStat={selectedStat}
                   selectedSubStat={selectedSubStat}
-                  onSubStatChange={setSelectedSubStat}
+                  onSubStatChange={handleSubStatChange}
                 />
               </div>
 
-              <div className='px-6 pb-6'>
+              {/* Visualization and Details */}
+              <div className="px-6 pb-6">
                 {loading ? (
-                  <div className='flex h-full items-center justify-center'>
-                    <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent' />
+                  <div className="flex h-full items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
                   </div>
                 ) : error ? (
-                  <div className='flex h-full items-center justify-center text-red-500'>
+                  <div className="flex h-full items-center justify-center text-red-500">
                     {error}
                   </div>
                 ) : (
@@ -104,18 +88,12 @@ const PlayerMatchPerformance = () => {
                     <Visualization
                       selectedStat={selectedStat}
                       selectedSubStat={selectedSubStat}
-                      shootingData={shootingData}
-                      touches={touches}
-                      selectedTouch={
-                        selectedStat === 'summary' ? selectedItem : null
-                      }
-                      selectedShot={
-                        selectedStat === 'shooting' ? selectedItem : null
-                      }
+                      data={data}
+                      selectedItem={selectedItem}
                       onItemClick={handleItemClick}
                     />
 
-                    <div className='mt-4 rounded-lg bg-gray-50 p-4'>
+                    <div className="mt-4 rounded-lg bg-gray-50 p-4">
                       <ItemDetails
                         selectedStat={selectedStat}
                         selectedItem={selectedItem}
@@ -128,12 +106,11 @@ const PlayerMatchPerformance = () => {
           </div>
         </div>
 
-        <div className='mt-4 flex justify-center'>
+        {/* Team Switch Button */}
+        <div className="mt-4 flex justify-center">
           <button
-            className='rounded-full bg-gray-800 px-6 py-2 text-white shadow-lg hover:bg-gray-700'
-            onClick={() =>
-              setSelectedTeam(prev => (prev === 'team1' ? 'team2' : 'team1'))
-            }
+            className="rounded-full bg-gray-800 px-6 py-2 text-white shadow-lg hover:bg-gray-700"
+            onClick={() => setSelectedTeam(prev => prev === 'team1' ? 'team2' : 'team1')}
           >
             Switch to {selectedTeam === 'team1' ? 'Team 2' : 'Team 1'}
           </button>

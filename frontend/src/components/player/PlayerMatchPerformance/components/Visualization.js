@@ -1,13 +1,13 @@
+// src/components/Visualization.jsx
 import React from 'react';
+import { STAT_TYPES } from '../config/statTypes';
 import { statCategories } from '../config/statConfig';
 
 export const Visualization = ({
   selectedStat,
   selectedSubStat,
-  shootingData,
-  touches,
-  selectedTouch,
-  selectedShot,
+  data,
+  selectedItem,
   onItemClick,
 }) => {
   const category = statCategories.find(cat => cat.id === selectedStat);
@@ -17,20 +17,47 @@ export const Visualization = ({
 
   const { container: Container, component: Component } = subStat;
 
-  const componentProps =
-    selectedStat === 'shooting'
-      ? {
-          shots: shootingData?.shots || [],
+  // Determine props based on stat type
+  const getComponentProps = () => {
+    switch (selectedStat) {
+      case STAT_TYPES.SHOOTING:
+        return {
+          shots: data?.shots || [],
           onShotClick: onItemClick,
-          selectedShot,
-          showLabels: false,
-        }
-      : {
-          touches,
-          onTouchClick: onItemClick,
-          selectedTouch,
+          selectedShot: selectedItem,
           showLabels: false,
         };
+      
+      case STAT_TYPES.SUMMARY:
+        return {
+          touches: data?.touches || [], // Fix: Access touches from data object
+          onTouchClick: onItemClick,
+          selectedTouch: selectedItem,
+          showLabels: false,
+        };
+        
+      case STAT_TYPES.PASSING:
+        return {
+          passes: data?.passes || [],
+          onPassClick: onItemClick,
+          selectedPass: selectedItem,
+          showLabels: false,
+        };
+        
+      case STAT_TYPES.DEFENDING:
+        return {
+          actions: data?.actions || [],
+          onActionClick: onItemClick,
+          selectedAction: selectedItem,
+          showLabels: false,
+        };
+
+      default:
+        return {};
+    }
+  };
+
+  const componentProps = getComponentProps();
 
   return (
     <Container>

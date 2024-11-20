@@ -1,5 +1,5 @@
 import React from 'react';
-import { statCategories } from '../config/statConfig';
+import { statCategories } from '../config/statConfig'; // change for getSubStatTypes(selectedStat);
 
 export const SubStatNavigation = ({
   selectedStat,

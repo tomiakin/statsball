@@ -1,3 +1,4 @@
+import { STAT_TYPES } from './statTypes';
 import SoccerPitch from '../../../pitch/SoccerPitch';
 import VerticalSoccerPitch from '../../../pitch/VerticalSoccerPitch';
 import HalfVerticalPitch from '../../../pitch/HalfVerticalPitch';
@@ -7,13 +8,13 @@ import PlayerMatchShots from '../visualizations/PlayerMatchShots';
 
 export const statCategories = [
   {
-    id: 'summary',
+    id: STAT_TYPES.SUMMARY,  // Using new enum
     name: 'Summary',
     subStats: [
       {
         id: 'touches',
         name: 'Touches',
-        container: ({ children }) => (
+        container: ({ children }) => (  // Keeping your working container setup
           <div className='w-full'>
             <SoccerPitch>{children}</SoccerPitch>
           </div>
@@ -29,11 +30,11 @@ export const statCategories = [
           </div>
         ),
         component: PlayerVertMatchTouches,
-      },
-    ],
+      }
+    ]
   },
   {
-    id: 'shooting',
+    id: STAT_TYPES.SHOOTING,  // Using new enum
     name: 'Shooting',
     subStats: [
       {
@@ -45,7 +46,44 @@ export const statCategories = [
           </div>
         ),
         component: PlayerMatchShots,
-      },
-    ],
+      }
+    ]
   },
+  // New categories
+  {
+    id: STAT_TYPES.PASSING,
+    name: 'Passing',
+    subStats: [
+      {
+        id: 'passMap',
+        name: 'Pass Map',
+        container: ({ children }) => (
+          <div className='w-full'>
+            <SoccerPitch>{children}</SoccerPitch>
+          </div>
+        ),
+        component: PlayerMatchTouches, // You'll need to create passing specific components
+      },
+    ]
+  },
+  {
+    id: STAT_TYPES.DEFENDING,
+    name: 'Defending',
+    subStats: [
+      {
+        id: 'defensiveActions',
+        name: 'Defensive Actions',
+        container: ({ children }) => (
+          <div className='w-full'>
+            <SoccerPitch>{children}</SoccerPitch>
+          </div>
+        ),
+        component: PlayerMatchTouches, // You'll need to create defending specific components
+      },
+    ]
+  }
 ];
+
+export const getStatConfig = (statType) => {
+  return statCategories.find(config => config.id === statType);
+};

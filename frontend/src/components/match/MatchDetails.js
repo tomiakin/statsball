@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { LoadingSpinner, ErrorMessage } from '../common';
 import * as api from '../../services/api';
 
 const TeamLineup = ({ teamName, players, onPlayerClick }) => {
@@ -47,7 +48,7 @@ const TeamLineup = ({ teamName, players, onPlayerClick }) => {
             {players.map(player => (
               <tr
                 key={player.player_id}
-                onClick={() => onPlayerClick(player.player_name)}
+                onClick={() => onPlayerClick(player)}
                 className='cursor-pointer hover:bg-gray-50'
               >
                 <td className='px-4 py-2'>{player.jersey_number || '-'}</td>
@@ -108,18 +109,35 @@ const MatchDetails = () => {
     fetchLineups();
   }, [matchId]);
 
-  const handlePlayerClick = playerName => {
+  const handlePlayerClick = (player) => {
+    if (!player || !player.player_name) {
+      console.error('Invalid player data:', player);
+      return;
+    }
+
     navigate(
-      `/player-performance/${matchId}/${encodeURIComponent(playerName)}`,
+      `/player-performance/${matchId}/${encodeURIComponent(player.player_name)}`,
+      {
+        state: {
+          playerInfo: {
+            playerId: player.player_id,
+            playerName: player.player_name,
+            nickname: player.nickname,
+            jerseyNumber: player.jersey_number,
+            team: player.team_name,
+            position: player.positions?.[0]?.position,
+          }
+        }
+      }
     );
   };
 
   if (loading) {
-    return null; // BaseLayout will handle loading
+    return <LoadingSpinner message="Loading match lineup..." />;
   }
 
   if (error) {
-    return null; // BaseLayout will handle error
+    return <ErrorMessage message={error} />;
   }
 
   return (
@@ -146,12 +164,18 @@ const MatchDetails = () => {
       <div className='grid gap-6 md:grid-cols-2'>
         <TeamLineup
           teamName={lineups.homeTeam}
-          players={lineups.home}
+          players={lineups.home.map(player => ({
+            ...player,
+            team_name: lineups.homeTeam
+          }))}
           onPlayerClick={handlePlayerClick}
         />
         <TeamLineup
           teamName={lineups.awayTeam}
-          players={lineups.away}
+          players={lineups.away.map(player => ({
+            ...player,
+            team_name: lineups.awayTeam
+          }))}
           onPlayerClick={handlePlayerClick}
         />
       </div>

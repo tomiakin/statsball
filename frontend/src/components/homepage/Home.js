@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LoadingSpinner, ErrorMessage } from '../common';
 import * as api from '../../services/api';
 
 const Home = () => {
@@ -80,7 +81,19 @@ const Home = () => {
   };
 
   if (loading) {
-    return null; // BaseLayout will handle loading
+    return <LoadingSpinner message="Loading leagues..." />;
+  }
+
+  if (error) {
+    return (
+      <ErrorMessage 
+        message={error} 
+        action={{
+          label: 'Try Again',
+          onClick: () => window.location.reload()
+        }}
+      />
+    );
   }
 
   return (

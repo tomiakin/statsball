@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { LoadingSpinner, ErrorMessage, EmptyState } from '../common';
+import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import * as api from '../../services/api';
 
@@ -49,7 +51,7 @@ const CompetitionOverview = () => {
       setTeams(uniqueTeams);
     } catch (err) {
       console.error('Error loading data:', err);
-      setError('Failed to load data. Please try again.');
+      setError('Failed to load data. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -92,26 +94,28 @@ const CompetitionOverview = () => {
   };
 
   if (loading) {
-    return (
-      <div className='flex h-screen items-center justify-center'>
-        <div className='h-8 w-8 animate-spin rounded-full border-4 border-dotted border-blue-500'></div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading competition data..." />;
   }
 
   if (error) {
     return (
-      <div className='container mx-auto mt-4 text-center'>
-        <div className='mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700'>
-          <p>{error}</p>
-          <button
-            className='rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600'
-            onClick={loadData}
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
+      <ErrorMessage 
+        message={error}
+        action={{
+          label: 'Try Again',
+          onClick: loadData
+        }}
+      />
+    );
+  }
+
+  if (!allMatches.length) {
+    return (
+      <EmptyState
+        icon={Calendar}
+        title="No Matches Found"
+        message="There are no matches available for this competition yet."
+      />
     );
   }
 
