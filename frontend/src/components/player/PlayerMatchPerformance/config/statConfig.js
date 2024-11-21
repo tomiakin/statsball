@@ -2,8 +2,8 @@ import { STAT_TYPES } from './statTypes';
 import SoccerPitch from '../../../pitch/SoccerPitch';
 import VerticalSoccerPitch from '../../../pitch/VerticalSoccerPitch';
 import HalfVerticalPitch from '../../../pitch/HalfVerticalPitch';
+import { GoalPostVisualization } from '../../../pitch/GoalPost';
 import PlayerMatchTouches from '../visualizations/PlayerMatchTouches';
-import PlayerVertMatchTouches from '../visualizations/PlayerVertMatchTouches';
 import PlayerMatchShots from '../visualizations/PlayerMatchShots';
 
 export const statCategories = [
@@ -14,42 +14,60 @@ export const statCategories = [
       {
         id: 'touches',
         name: 'Touches',
-        container: (
-          { children }, // Keeping your working container setup
-        ) => (
-          <div className='w-full'>
+        container: ({ children }) => (
+          <div className="w-full">
             <SoccerPitch>{children}</SoccerPitch>
           </div>
         ),
-        component: PlayerMatchTouches,
+        component: props => <PlayerMatchTouches {...props} orientation="horizontal" />
       },
       {
         id: 'heatmap',
         name: 'Heatmap',
         container: ({ children }) => (
-          <div className='mx-auto w-full max-w-xl'>
+          <div className="mx-auto w-full max-w-xl">
             <VerticalSoccerPitch>{children}</VerticalSoccerPitch>
           </div>
         ),
-        component: PlayerVertMatchTouches,
+        component: props => <PlayerMatchTouches {...props} orientation="vertical" />
       },
     ],
   },
   {
-    id: STAT_TYPES.SHOOTING, // Using new enum
+    id: STAT_TYPES.SHOOTING,
     name: 'Shooting',
     subStats: [
       {
-        id: 'shots',
-        name: 'All Shots',
+        id: 'shots-vertical',
+        name: 'Shots (Vertical)',
         container: ({ children }) => (
-          <div className='mx-auto w-full max-w-xl'>
+          <div className="mx-auto w-full max-w-xl">
             <HalfVerticalPitch>{children}</HalfVerticalPitch>
           </div>
         ),
-        component: PlayerMatchShots,
+        component: props => <PlayerMatchShots {...props} orientation="vertical" />
       },
-    ],
+      {
+        id: 'shots-horizontal',
+        name: 'Shots (Horizontal)',
+        container: ({ children }) => (
+          <div className="w-full">
+            <SoccerPitch>{children}</SoccerPitch>
+          </div>
+        ),
+        component: props => <PlayerMatchShots {...props} orientation="horizontal" />
+      },
+      {
+        id: 'shots-goalview',
+        name: 'Shots (Goal View)',
+        container: ({ children }) => (
+          <div className="w-full">
+            <GoalPostVisualization>{children}</GoalPostVisualization>
+          </div>
+        ),
+        component: props => <PlayerMatchShots {...props} orientation="goalview" />
+      }
+    ]
   },
   // New categories
   {
@@ -61,7 +79,7 @@ export const statCategories = [
         name: 'Pass Map',
         container: ({ children }) => (
           <div className='w-full'>
-            <SoccerPitch>{children}</SoccerPitch>
+            <GoalPostVisualization>{children}</GoalPostVisualization>
           </div>
         ),
         component: PlayerMatchTouches, // You'll need to create passing specific components

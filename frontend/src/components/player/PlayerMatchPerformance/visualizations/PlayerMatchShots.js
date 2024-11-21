@@ -5,16 +5,21 @@ const PlayerMatchShots = ({
   onShotClick,
   selectedShot,
   showLabels = true,
+  orientation = 'vertical'
 }) => {
   const handleShotClick = useCallback(
     (shot, event) => {
       event.stopPropagation();
       onShotClick?.(shot);
     },
-    [onShotClick],
+    [onShotClick]
   );
 
-  const getShotRadius = xg => {
+  const getShotRadius = (xg, isGoalView) => {
+    if (isGoalView) {
+      return 0.2; // Smaller, fixed size for goal view
+    }
+    
     if (!xg) return 1;
     const xgValue = parseFloat(xg);
     if (xgValue <= 0.05) return 0.8;
@@ -24,114 +29,135 @@ const PlayerMatchShots = ({
     return 2.4;
   };
 
-  const getShotStyle = (shot, isSelected) => {
+  const getShotStyle = (shot, isSelected, isGoalView) => {
     const isGoal = shot.shot_outcome === 'Goal';
     return {
       fill: isGoal ? 'rgba(244, 63, 94, 0.6)' : 'rgba(0, 0, 0, 0.1)',
       stroke: isGoal ? '#000000' : '#000000',
-      strokeWidth: isSelected ? '0.4' : '0.2',
+      strokeWidth: isSelected ? (isGoalView ? '0.1' : '0.4') : (isGoalView ? '0.05' : '0.2'),
       cursor: 'pointer',
     };
   };
 
-  const getLineStartPoint = (
-    startX,
-    startY,
-    endX,
-    endY,
-    radius,
-    isSelected,
-  ) => {
-    const dx = endX - startX;
-    const dy = endY - startY;
+  const mapRange = (value, a, b, c, d) => {
+    return c + (value - a) * (d - c) / (b - a);
+  };
+
+  const getCoordinates = (location, isEndLocation = false) => {
+    if (!location) return { x: 0, y: 0 };
+    
+    const [originalX, originalY, originalZ] = location;
+    
+    if (orientation === 'goalview' && isEndLocation) {
+      return {
+        x: originalY,
+        y: originalZ !== undefined ? mapRange(originalZ, 0, 5.34, 5.34, 0) : 0
+      };
+    }
+    
+    if (orientation === 'vertical') {
+      return {
+        x: originalY,
+        y: 120 - originalX
+      };
+    }
+    
+    return {
+      x: originalX,
+      y: originalY
+    };
+  };
+
+  const getLineStartPoint = (start, end, radius, isSelected) => {
+    const startCoord = getCoordinates(start);
+    const endCoord = getCoordinates(end);
+    
+    const dx = endCoord.x - startCoord.x;
+    const dy = endCoord.y - startCoord.y;
     const length = Math.sqrt(dx * dx + dy * dy);
-    // When selected, start exactly at the outline radius
     const totalRadius = radius + (isSelected ? 0.5 : 0);
 
     return {
-      x: startX + (dx / length) * totalRadius,
-      y: startY + (dy / length) * totalRadius,
+      x: startCoord.x + (dx / length) * totalRadius,
+      y: startCoord.y + (dy / length) * totalRadius,
     };
   };
 
   return (
     <>
-      {/* Original shot circles */}
       {shots.map((shot, index) => {
-        const x = shot.location[1];
-        const y = 120 - shot.location[0];
+        const isGoalView = orientation === 'goalview';
+        const coords = isGoalView 
+          ? getCoordinates(shot.shot_end_location, true)
+          : getCoordinates(shot.location);
+        
         const isSelected = selectedShot?.id === shot.id;
-        const shotStyle = getShotStyle(shot, isSelected);
-        const radius = getShotRadius(shot.shot_statsbomb_xg);
+        const shotStyle = getShotStyle(shot, isSelected, isGoalView);
+        const radius = getShotRadius(shot.shot_statsbomb_xg, isGoalView);
+
+        // Skip shots without end location for goalview
+        if (isGoalView && !shot.shot_end_location) {
+          return null;
+        }
 
         return (
           <g
-            key={shot.id || `${index}-${x}-${y}`}
+            key={shot.id || `${index}-${coords.x}-${coords.y}`}
             onClick={e => handleShotClick(shot, e)}
           >
-            {/* Selection highlight */}
             {isSelected && (
               <circle
-                cx={x}
-                cy={y}
-                r={radius + 0.6}
-                fill='none'
-                stroke='rgb(255, 0, 0)'
-                strokeWidth='0.4'
+                cx={coords.x}
+                cy={coords.y}
+                r={radius + (isGoalView ? 0.14 : 0.6)}
+                fill="none"
+                stroke="rgb(255, 0, 0)"
+                strokeWidth={isGoalView ? "0.1" : "0.4"}
               />
             )}
 
-            {/* Shot circle */}
-            <circle cx={x} cy={y} r={radius} style={shotStyle} />
+            <circle 
+              cx={coords.x} 
+              cy={coords.y} 
+              r={radius} 
+              style={shotStyle} 
+            />
 
-            {/* Label */}
-            {showLabels && (
+            {showLabels && !isGoalView && (
               <text
-                x={x}
-                y={y - radius - 0.5}
-                fontSize='2'
+                x={coords.x}
+                y={coords.y - radius - 0.5}
+                fontSize="2"
                 fill={shotStyle.stroke}
-                textAnchor='middle'
-                alignmentBaseline='bottom'
+                textAnchor="middle"
+                alignmentBaseline="bottom"
               >
                 {index + 1}
               </text>
             )}
+
+            {/* Only show trajectory line for pitch views, not goalview */}
+            {isSelected && shot.shot_end_location && !isGoalView && (
+              <line
+                x1={getLineStartPoint(
+                  shot.location,
+                  shot.shot_end_location,
+                  radius,
+                  true
+                ).x}
+                y1={getLineStartPoint(
+                  shot.location,
+                  shot.shot_end_location,
+                  radius,
+                  true
+                ).y}
+                x2={getCoordinates(shot.shot_end_location).x}
+                y2={getCoordinates(shot.shot_end_location).y}
+                stroke="rgb(255, 0, 0)"
+                strokeWidth="0.4"
+              />
+            )}
           </g>
-        );
-      })}
-
-      {/* Shot trajectories */}
-      {shots.map((shot, index) => {
-        if (!shot.shot_end_location) return null;
-
-        const startX = shot.location[1];
-        const startY = 120 - shot.location[0];
-        const endX = shot.shot_end_location[1];
-        const endY = 120 - shot.shot_end_location[0];
-        const isSelected = selectedShot?.id === shot.id;
-        const radius = getShotRadius(shot.shot_statsbomb_xg);
-
-        const startPoint = getLineStartPoint(
-          startX,
-          startY,
-          endX,
-          endY,
-          radius,
-          isSelected,
-        );
-
-        return (
-          <line
-            key={`trajectory-${shot.id || index}`}
-            x1={startPoint.x}
-            y1={startPoint.y}
-            x2={endX}
-            y2={endY}
-            stroke={isSelected ? 'rgb(255, 0, 0)' : 'rgba(156, 163, 175, 0.4)'}
-            strokeWidth='0.4'
-            strokeDasharray={isSelected ? undefined : '0.5'}
-          />
         );
       })}
     </>

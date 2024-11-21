@@ -65,3 +65,5 @@ export const Visualization = ({
     </Container>
   );
 };
+
+// component = touches and container = pitch

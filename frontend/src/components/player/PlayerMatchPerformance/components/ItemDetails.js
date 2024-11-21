@@ -1,7 +1,7 @@
 // src/components/ItemDetails.jsx
 import React from 'react';
 import { STAT_TYPES } from '../config/statTypes';
-
+// EDIT FOR ONLY SUBSTAT
 export const ItemDetails = ({ selectedStat, selectedItem }) => {
   const renderDetails = () => {
     switch (selectedStat) {
