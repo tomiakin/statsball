@@ -15,21 +15,25 @@ export const statCategories = [
         id: 'touches',
         name: 'Touches',
         container: ({ children }) => (
-          <div className="w-full">
+          <div className='w-full'>
             <SoccerPitch>{children}</SoccerPitch>
           </div>
         ),
-        component: props => <PlayerMatchTouches {...props} orientation="horizontal" />
+        component: props => (
+          <PlayerMatchTouches {...props} orientation='horizontal' />
+        ),
       },
       {
         id: 'heatmap',
         name: 'Heatmap',
         container: ({ children }) => (
-          <div className="mx-auto w-full max-w-xl">
+          <div className='mx-auto w-full max-w-xl'>
             <VerticalSoccerPitch>{children}</VerticalSoccerPitch>
           </div>
         ),
-        component: props => <PlayerMatchTouches {...props} orientation="vertical" />
+        component: props => (
+          <PlayerMatchTouches {...props} orientation='vertical' />
+        ),
       },
     ],
   },
@@ -41,33 +45,39 @@ export const statCategories = [
         id: 'shots-vertical',
         name: 'Shots (Vertical)',
         container: ({ children }) => (
-          <div className="mx-auto w-full max-w-xl">
+          <div className='mx-auto w-full max-w-xl'>
             <HalfVerticalPitch>{children}</HalfVerticalPitch>
           </div>
         ),
-        component: props => <PlayerMatchShots {...props} orientation="vertical" />
+        component: props => (
+          <PlayerMatchShots {...props} orientation='vertical' />
+        ),
       },
       {
         id: 'shots-horizontal',
         name: 'Shots (Horizontal)',
         container: ({ children }) => (
-          <div className="w-full">
+          <div className='w-full'>
             <SoccerPitch>{children}</SoccerPitch>
           </div>
         ),
-        component: props => <PlayerMatchShots {...props} orientation="horizontal" />
+        component: props => (
+          <PlayerMatchShots {...props} orientation='horizontal' />
+        ),
       },
       {
         id: 'shots-goalview',
         name: 'Shots (Goal View)',
         container: ({ children }) => (
-          <div className="w-full">
+          <div className='w-full'>
             <GoalPostVisualization>{children}</GoalPostVisualization>
           </div>
         ),
-        component: props => <PlayerMatchShots {...props} orientation="goalview" />
-      }
-    ]
+        component: props => (
+          <PlayerMatchShots {...props} orientation='goalview' />
+        ),
+      },
+    ],
   },
   // New categories
   {

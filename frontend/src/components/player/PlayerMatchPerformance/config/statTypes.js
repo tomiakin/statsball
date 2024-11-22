@@ -1,11 +1,11 @@
 export const STAT_TYPES = {
   SUMMARY: 'summary',
-  SHOOTING: 'shooting', 
+  SHOOTING: 'shooting',
   PASSING: 'passing',
   DEFENDING: 'defending',
- };
- 
- export const SUB_STAT_TYPES = {
+};
+
+export const SUB_STAT_TYPES = {
   SUMMARY: {
     TOUCHES: 'touches',
     HEATMAP: 'heatmap',
@@ -13,7 +13,7 @@ export const STAT_TYPES = {
   SHOOTING: {
     SHOTS_VERTICAL: 'shots-vertical',
     SHOTS_HORIZONTAL: 'shots-horizontal',
-    SHOTS_GOALVIEW: 'shots-goalview'
+    SHOTS_GOALVIEW: 'shots-goalview',
   },
   PASSING: {
     PASS_MAP: 'passMap',
@@ -21,16 +21,16 @@ export const STAT_TYPES = {
   DEFENDING: {
     DEFENSIVE_ACTIONS: 'defensiveActions',
   },
- };
- 
- export const STAT_TITLES = {
+};
+
+export const STAT_TITLES = {
   [STAT_TYPES.SUMMARY]: 'Match Overview',
   [STAT_TYPES.SHOOTING]: 'Shooting Overview',
   [STAT_TYPES.PASSING]: 'Passing Overview',
-  [STAT_TYPES.DEFENDING]: 'Defending Overview'
- };
- 
- export const getSubStatTypes = statType => {
+  [STAT_TYPES.DEFENDING]: 'Defending Overview',
+};
+
+export const getSubStatTypes = statType => {
   switch (statType) {
     case STAT_TYPES.SUMMARY:
       return SUB_STAT_TYPES.SUMMARY;
@@ -43,9 +43,9 @@ export const STAT_TYPES = {
     default:
       return {};
   }
- };
- 
- export const getDefaultSubStat = statType => {
+};
+
+export const getDefaultSubStat = statType => {
   switch (statType) {
     case STAT_TYPES.SUMMARY:
       return SUB_STAT_TYPES.SUMMARY.TOUCHES;
@@ -58,4 +58,4 @@ export const STAT_TYPES = {
     default:
       return '';
   }
- };
+};

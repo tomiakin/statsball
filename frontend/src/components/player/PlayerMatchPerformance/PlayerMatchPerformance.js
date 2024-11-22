@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { STAT_TYPES, getDefaultSubStat } from './config/statTypes';
 import { useStatData } from './hooks/useStatData';
@@ -8,11 +8,13 @@ import { StatOverview } from './components/StatOverview';
 import { SubStatNavigation } from './components/SubStatNavigation';
 import { ItemDetails } from './components/ItemDetails';
 import { Visualization } from './components/Visualization';
+import * as api from '../../../services/api';
 
 const PlayerMatchPerformance = () => {
   const { matchId, playerName } = useParams();
   const location = useLocation();
-  const playerInfo = location.state?.playerInfo;
+  const [playerInfo, setPlayerInfo] = useState(location.state?.playerInfo || null);
+  const [loadingPlayerInfo, setLoadingPlayerInfo] = useState(!location.state?.playerInfo);
 
   const [selectedStat, setSelectedStat] = useState(STAT_TYPES.SUMMARY);
   const [selectedSubStat, setSelectedSubStat] = useState(
@@ -20,6 +22,47 @@ const PlayerMatchPerformance = () => {
   );
   const [selectedTeam, setSelectedTeam] = useState('team1');
   const [selectedItem, setSelectedItem] = useState(null);
+
+  // Fetch player info if not available in state
+  useEffect(() => {
+    const fetchPlayerInfo = async () => {
+      if (!playerInfo && matchId && playerName) {
+        try {
+          const lineupsData = await api.getMatchLineups(matchId);
+          
+          // Search through both teams' lineups
+          const allPlayers = [
+            ...Object.values(lineupsData)[0] || [],
+            ...Object.values(lineupsData)[1] || []
+          ];
+          
+          const player = allPlayers.find(p => 
+            p.player_name === decodeURIComponent(playerName) ||
+            p.nickname === decodeURIComponent(playerName)
+          );
+
+          if (player) {
+            setPlayerInfo({
+              playerId: player.player_id,
+              playerName: player.player_name,
+              nickname: player.nickname,
+              jerseyNumber: player.jersey_number,
+              team: Object.keys(lineupsData).find(team => 
+                lineupsData[team].some(p => p.player_id === player.player_id)
+              ),
+              position: player.positions?.[0]?.position,
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching player info:', error);
+        } finally {
+          setLoadingPlayerInfo(false);
+        }
+      }
+    };
+
+    fetchPlayerInfo();
+  }, [matchId, playerName, playerInfo]);
 
   // Use our custom hook to fetch data
   const { data, loading, error } = useStatData(
@@ -46,14 +89,21 @@ const PlayerMatchPerformance = () => {
     setSelectedItem(prev => (prev === item ? null : item));
   };
 
+  if (loadingPlayerInfo) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <div className='min-h-screen bg-gray-100'>
       <div className='container mx-auto px-4 py-8'>
         <div className='grid grid-cols-12 gap-4'>
           {/* Profile and Navigation Section */}
           <div className='col-span-12 grid grid-cols-12 gap-4'>
-            <PlayerProfile />{' '}
-            {/* Removed playerName prop since we access via useLocation now */}
+          <PlayerProfile playerInfo={playerInfo} />
             <StatNavigation
               selectedStat={selectedStat}
               onStatChange={handleStatChange}
