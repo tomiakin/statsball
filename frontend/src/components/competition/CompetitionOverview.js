@@ -169,7 +169,11 @@ const CompetitionOverview = () => {
                 <tr
                   key={match.match_id}
                   className='cursor-pointer hover:bg-gray-100'
-                  onClick={() => navigate(`/match/${match.match_id}`)}
+                  onClick={() =>
+                    navigate(`/match/${match.match_id}`, {
+                      state: { matchData: match },
+                    })
+                  }
                 >
                   <td className='px-6 py-4'>
                     {format(new Date(match.match_date), 'MMM d, yyyy')}

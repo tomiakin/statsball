@@ -13,8 +13,12 @@ import * as api from '../../../services/api';
 const PlayerMatchPerformance = () => {
   const { matchId, playerName } = useParams();
   const location = useLocation();
-  const [playerInfo, setPlayerInfo] = useState(location.state?.playerInfo || null);
-  const [loadingPlayerInfo, setLoadingPlayerInfo] = useState(!location.state?.playerInfo);
+  const [playerInfo, setPlayerInfo] = useState(
+    location.state?.playerInfo || null,
+  );
+  const [loadingPlayerInfo, setLoadingPlayerInfo] = useState(
+    !location.state?.playerInfo,
+  );
 
   const [selectedStat, setSelectedStat] = useState(STAT_TYPES.SUMMARY);
   const [selectedSubStat, setSelectedSubStat] = useState(
@@ -29,16 +33,17 @@ const PlayerMatchPerformance = () => {
       if (!playerInfo && matchId && playerName) {
         try {
           const lineupsData = await api.getMatchLineups(matchId);
-          
+
           // Search through both teams' lineups
           const allPlayers = [
-            ...Object.values(lineupsData)[0] || [],
-            ...Object.values(lineupsData)[1] || []
+            ...(Object.values(lineupsData)[0] || []),
+            ...(Object.values(lineupsData)[1] || []),
           ];
-          
-          const player = allPlayers.find(p => 
-            p.player_name === decodeURIComponent(playerName) ||
-            p.nickname === decodeURIComponent(playerName)
+
+          const player = allPlayers.find(
+            p =>
+              p.player_name === decodeURIComponent(playerName) ||
+              p.nickname === decodeURIComponent(playerName),
           );
 
           if (player) {
@@ -47,8 +52,8 @@ const PlayerMatchPerformance = () => {
               playerName: player.player_name,
               nickname: player.nickname,
               jerseyNumber: player.jersey_number,
-              team: Object.keys(lineupsData).find(team => 
-                lineupsData[team].some(p => p.player_id === player.player_id)
+              team: Object.keys(lineupsData).find(team =>
+                lineupsData[team].some(p => p.player_id === player.player_id),
               ),
               position: player.positions?.[0]?.position,
             });
@@ -91,8 +96,8 @@ const PlayerMatchPerformance = () => {
 
   if (loadingPlayerInfo) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+      <div className='flex h-screen items-center justify-center'>
+        <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent' />
       </div>
     );
   }
@@ -103,7 +108,7 @@ const PlayerMatchPerformance = () => {
         <div className='grid grid-cols-12 gap-4'>
           {/* Profile and Navigation Section */}
           <div className='col-span-12 grid grid-cols-12 gap-4'>
-          <PlayerProfile playerInfo={playerInfo} />
+            <PlayerProfile playerInfo={playerInfo} />
             <StatNavigation
               selectedStat={selectedStat}
               onStatChange={handleStatChange}

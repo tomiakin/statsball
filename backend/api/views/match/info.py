@@ -1,8 +1,9 @@
-# This shows general macth info, starting xi, referee etc, teams that played, date etcs, add a new view for this info
-# there are also info on olayer cards, move this to playr macth and season evntually
-# i have match lienup in which you can see starting 11 and then u also have a match info view that shows starting xi so sort that
-# we can also add more misc stats here
-
+# GET COMP INFO - shows season, stage and competition
+# GET COMP MACTHES - shows everyhting u need/ want, season, score, time etc, referee, date
+# GET MATCH LINEUPS - focuses on players, eg their name, number, if thye stayred, and why, if they got a card (and why and time)
+# GET MATCH INFO - focuses on team stuff, its a list of match events it shows evryhting lineups shows the difference is that these
+# are events that are in info type, tactical cnage see, 
+# eg start of matc formaiton change, sub time eg formation/tactic and when, 
 from api.core.imports import *
 
 
