@@ -6,7 +6,7 @@ import MatchLineups from './MatchLineups';
 import * as api from '../../services/api';
 
 const MatchDetails = () => {
-  const { matchId } = useParams();
+  const { competitionId, seasonId, matchId } = useParams(); // Updated
   const navigate = useNavigate();
   const location = useLocation();
   const [matchData, setMatchData] = useState(location.state?.matchData || null);
@@ -22,17 +22,18 @@ const MatchDetails = () => {
         // If we don't have match data from navigation state, fetch it
         let currentMatch = matchData;
         if (!currentMatch) {
-          const matchesData = await api.getCompetitionMatches();
-          currentMatch = matchesData.find(
-            m => m.match_id.toString() === matchId,
-          );
+          const matches = await api.getCompetitionMatches(
+            competitionId,
+            seasonId,
+          ); // Updated
+          currentMatch = matches.find(m => m.match_id.toString() === matchId);
           if (!currentMatch) throw new Error('Match not found');
           setMatchData(currentMatch);
         }
 
         // Fetch lineups
         const lineupsData = await api.getMatchLineups(matchId);
-        console.log('Fetched lineups:', lineupsData); // Debug log
+        console.log('Fetched lineups:', lineupsData);
         setLineups(lineupsData);
         setError(null);
       } catch (err) {
@@ -44,7 +45,7 @@ const MatchDetails = () => {
     };
 
     if (matchId) fetchData();
-  }, [matchId, matchData]);
+  }, [matchId, competitionId, seasonId, matchData]); // Updated dependencies
 
   const handlePlayerClick = player => {
     if (!player?.player_name) {
@@ -53,7 +54,7 @@ const MatchDetails = () => {
     }
 
     navigate(
-      `/player-performance/${matchId}/${encodeURIComponent(player.player_name)}`,
+      `/player-performance/${competitionId}/${seasonId}/${matchId}/${encodeURIComponent(player.player_name)}`, // Updated
       {
         state: {
           playerInfo: {
@@ -64,6 +65,7 @@ const MatchDetails = () => {
             team: player.team_name,
             position: player.positions?.[0]?.position,
           },
+          matchData: matchData,
         },
       },
     );

@@ -170,9 +170,16 @@ const CompetitionOverview = () => {
                   key={match.match_id}
                   className='cursor-pointer hover:bg-gray-100'
                   onClick={() =>
-                    navigate(`/match/${match.match_id}`, {
-                      state: { matchData: match },
-                    })
+                    navigate(
+                      `/match/${competitionId}/${seasonId}/${match.match_id}`,
+                      {
+                        state: {
+                          matchData: match,
+                          competitionId,
+                          seasonId,
+                        },
+                      },
+                    )
                   }
                 >
                   <td className='px-6 py-4'>

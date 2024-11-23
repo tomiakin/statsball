@@ -14,14 +14,19 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route
-            path='/player-performance/:matchId/:playerName'
-            element={<PlayerMatchPerformance />}
-          />
-          <Route
             path='/league/:competitionId/:seasonId'
             element={<CompetitionOverview />}
           />
-          <Route path='/match/:matchId' element={<MatchDetails />} />
+          {/* Updated match route to include competition and season IDs */}
+          <Route
+            path='/match/:competitionId/:seasonId/:matchId'
+            element={<MatchDetails />}
+          />
+          {/* Updated player performance route */}
+          <Route
+            path='/player-performance/:competitionId/:seasonId/:matchId/:playerName'
+            element={<PlayerMatchPerformance />}
+          />
         </Routes>
       </BaseLayout>
     </Router>
