@@ -3,7 +3,7 @@ from django.db import models
 class Event(models.Model):
     """Base model for all match events"""
     # Core identification
-    id = models.BigIntegerField(primary_key=True)  # Range: [2667434829.0 to 2667506369.0]
+    id = models.AutoField(primary_key=True)  # Range: [2667434829.0 to 2667506369.0]
     event_id = models.IntegerField()  # Range: [1 to 11840]
     match = models.ForeignKey('sbapi.Match', on_delete=models.CASCADE)
     team = models.ForeignKey('sbapi.Team', on_delete=models.CASCADE)
@@ -51,4 +51,10 @@ class Event(models.Model):
             models.Index(fields=['player', 'type']),
             models.Index(fields=['team', 'type']),
             models.Index(fields=['event_id']),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['match', 'event_id'],
+                name='%(app_label)s_%(class)s_unique_match_event'
+            )
         ]

@@ -1,8 +1,9 @@
 from django.db import models
+from django.utils import timezone
 
 class Match(models.Model):
     match_id = models.IntegerField(primary_key=True)
-    competition = models.ForeignKey('sbapi.Competition', on_delete=models.CASCADE)
+    season = models.ForeignKey('sbapi.Season', on_delete=models.CASCADE)
     
     # Date/Time fields
     start_datetime = models.DateTimeField()
@@ -25,14 +26,21 @@ class Match(models.Model):
     away_score_ft = models.IntegerField()
     home_score_et = models.IntegerField(null=True)
     away_score_et = models.IntegerField(null=True)
+
+    last_updated = models.DateTimeField(auto_now=True)
     
     class Meta:
         indexes = [
             models.Index(fields=['start_datetime']),
             models.Index(fields=['home_team']),
             models.Index(fields=['away_team']),
-            models.Index(fields=['referee_id']),  # New index
+            models.Index(fields=['referee_id']),
+            models.Index(fields=['season']),
         ]
+
+    @property
+    def competition(self):
+        return self.season.competition
     
     def __str__(self):
         return f"{self.home_team} vs {self.away_team} ({self.start_datetime.date()})"

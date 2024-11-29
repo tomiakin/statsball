@@ -50,7 +50,11 @@ class GoalkeeperEvent(Event):
     punches = models.BooleanField(default=False)
 
     class Meta:
+        db_table = 'sbapi_event_goalkeeping'  # Specific table name
+        verbose_name = 'Goalkeeper Event'
+        verbose_name_plural = 'Goalkeeper Events'
         indexes = [
+            *Event.Meta.indexes,  # Include parent's indexes
             models.Index(fields=['keeper_diving_save']),
             models.Index(fields=['keeper_save_total']),
             models.Index(fields=['keeper_penalty_saved']),

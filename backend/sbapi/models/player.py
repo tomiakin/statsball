@@ -2,10 +2,12 @@ from django.db import models
 
 class Player(models.Model):
     """Store player information"""
-    player_id = models.IntegerField(unique=True)
+    player_id = models.IntegerField(primary_key=True)  # Changed to primary_key
     name = models.CharField(max_length=100)
-    height = models.IntegerField(null=True)  # in cm
-    weight = models.IntegerField(null=True)  # in kg
+    height = models.IntegerField(null=True)
+    weight = models.IntegerField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
     
     class Meta:
         indexes = [
@@ -33,6 +35,8 @@ class MatchPlayer(models.Model):
 
     # Statistics from your data
     stats = models.JSONField(default=dict)  # Stores various player stats by minute
+
+    last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('match', 'player', 'team')

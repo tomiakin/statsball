@@ -54,7 +54,11 @@ class DefendingEvent(Event):
     penalty_conceded = models.BooleanField(default=False)
 
     class Meta:
+        db_table = 'sbapi_event_defending'  # Specific table name
+        verbose_name = 'Defending Event'
+        verbose_name_plural = 'Defending Events'
         indexes = [
+            *Event.Meta.indexes,  # Include parent's indexes
             models.Index(fields=['is_tackle']),
             models.Index(fields=['is_interception']),
             models.Index(fields=['is_clearance']),

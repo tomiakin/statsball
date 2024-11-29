@@ -66,7 +66,11 @@ class ShootingEvent(Event):
     penalty_shootout_scored = models.BooleanField(default=False)
 
     class Meta:
+        db_table = 'sbapi_event_shooting'  # Specific table name
+        verbose_name = 'Shooting Event'
+        verbose_name_plural = 'Shooting Events'
         indexes = [
+            *Event.Meta.indexes,
             models.Index(fields=['is_goal']),
             models.Index(fields=['is_shot']),
             models.Index(fields=['shot_on_target']),

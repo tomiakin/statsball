@@ -1,4 +1,4 @@
-from .competition import Competition
+from .competition import Competition, Season
 from .team import Team
 from .match import Match
 from .formation import Formation
@@ -15,6 +15,7 @@ from .events import (
 
 __all__ = [
     'Competition',
+    'Season',
     'Team',
     'Match',
     'Formation',

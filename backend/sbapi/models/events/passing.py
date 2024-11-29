@@ -74,7 +74,11 @@ class PassEvent(Event):
     throw_in = models.BooleanField(default=False)
 
     class Meta:
+        db_table = 'sbapi_event_passing'  # Specific table name
+        verbose_name = 'Passing Event'
+        verbose_name_plural = 'Passing Events'
         indexes = [
+            *Event.Meta.indexes,  # Include parent's indexes
             models.Index(fields=['pass_accurate']),
             models.Index(fields=['assist']),
             models.Index(fields=['pass_key']),

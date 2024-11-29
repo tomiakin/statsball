@@ -29,7 +29,11 @@ class PossessionEvent(Event):
     offside_provoked = models.BooleanField(default=False)
 
     class Meta:
+        db_table = 'sbapi_event_possession'  # Specific table name
+        verbose_name = 'Possession Event'
+        verbose_name_plural = 'Possession Events'
         indexes = [
+            *Event.Meta.indexes,
             models.Index(fields=['dribble_won']),
             models.Index(fields=['dispossessed']),
             models.Index(fields=['foul_committed']),

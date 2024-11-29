@@ -19,3 +19,13 @@ class SummaryEvent(Event):
             models.Index(fields=['card_type']),
             models.Index(fields=['sub_on', 'sub_off']),
         ]
+
+    class Meta:
+        db_table = 'sbapi_event_summary'  # Specific table name
+        verbose_name = 'Summary Event'
+        verbose_name_plural = 'Summary Events'
+        indexes = [
+            *Event.Meta.indexes,
+            models.Index(fields=['card_type']),
+            models.Index(fields=['sub_on', 'sub_off']),
+        ]

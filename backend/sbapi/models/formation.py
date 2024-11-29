@@ -17,7 +17,10 @@ class Formation(models.Model):
     formation_slots = models.JSONField(default=list)
     formation_positions = models.JSONField(default=list)  # Contains vertical/horizontal positions
 
+    last_updated = models.DateTimeField(auto_now=True)
+
     class Meta:
+        unique_together = ('match_team_stats', 'formation_id', 'period')
         indexes = [
             models.Index(fields=['formation_name']),
             models.Index(fields=['captain_player_id']),
