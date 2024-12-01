@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='match',
-            index=models.Index(fields=['season'], name='sbapi_match_season__d292ef_idx'),
+            index=models.Index(fields=['season'],
+                               name='sbapi_match_season__d292ef_idx'),
         ),
     ]

@@ -6,6 +6,7 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+
 class BaseStatsBombView(APIView):
     event_columns = [
         'id', 'index', 'period', 'timestamp', 'minute', 'second', 'type',
@@ -51,7 +52,8 @@ class BaseStatsBombView(APIView):
                 if isinstance(value, np.integer):
                     clean_record[key] = int(value)
                 elif isinstance(value, np.floating):
-                    clean_record[key] = float(value) if not np.isnan(value) else None
+                    clean_record[key] = float(
+                        value) if not np.isnan(value) else None
                 elif isinstance(value, (np.ndarray, list)):
                     # Handle array-like values
                     if isinstance(value, np.ndarray):

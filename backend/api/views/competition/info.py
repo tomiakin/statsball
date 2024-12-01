@@ -14,7 +14,8 @@ class SeasonsView(BaseStatsBombView):
     def get(self, request, competition_id):
         try:
             competitions = sb.competitions()
-            seasons = competitions[competitions['competition_id'] == competition_id]
+            seasons = competitions[competitions['competition_id']
+                                   == competition_id]
             return Response(seasons.to_dict(orient='records'))
         except Exception as e:
             return self.handle_error(e, "Failed to fetch seasons")

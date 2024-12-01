@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import League, Team, TeamParticipation, Standings
 
+
 @admin.register(League)
 class LeagueAdmin(admin.ModelAdmin):
     list_display = ('name', 'code', 'emblem')
@@ -15,9 +16,11 @@ class TeamAdmin(admin.ModelAdmin):
 
 @admin.register(TeamParticipation)
 class TeamParticipationAdmin(admin.ModelAdmin):
-    list_display = ('team', 'league', 'position', 'playedGames', 'won', 'draw', 'lost', 'points', 'goalDifference')
+    list_display = ('team', 'league', 'position', 'playedGames',
+                    'won', 'draw', 'lost', 'points', 'goalDifference')
     list_filter = ('league',)
     search_fields = ('team__name', 'league__name')
+
 
 @admin.register(Standings)
 class StandingsAdmin(admin.ModelAdmin):

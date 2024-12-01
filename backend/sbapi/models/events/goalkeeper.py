@@ -1,17 +1,18 @@
 from django.db import models
 from .base import Event
 
+
 class GoalkeeperEvent(Event):
     """Goalkeeper-specific event details"""
     # Core actions
     is_collected = models.BooleanField(default=False)
-    
+
     # Claims
     keeper_claim_high_lost = models.BooleanField(default=False)
     keeper_claim_high_won = models.BooleanField(default=False)
     keeper_claim_lost = models.BooleanField(default=False)
     keeper_claim_won = models.BooleanField(default=False)
-    
+
     # Save types
     keeper_diving_save = models.BooleanField(default=False)
     keeper_missed = models.BooleanField(default=False)
@@ -19,7 +20,7 @@ class GoalkeeperEvent(Event):
     standing_save = models.BooleanField(default=False)
     save_feet = models.BooleanField(default=False)
     save_hands = models.BooleanField(default=False)
-    
+
     # Save locations
     save_high_centre = models.BooleanField(default=False)
     save_high_left = models.BooleanField(default=False)
@@ -27,7 +28,7 @@ class GoalkeeperEvent(Event):
     save_low_centre = models.BooleanField(default=False)
     save_low_left = models.BooleanField(default=False)
     save_low_right = models.BooleanField(default=False)
-    
+
     # Save zones
     save_obox = models.BooleanField(default=False)  # Outside box
     save_obp = models.BooleanField(default=False)   # Outside box proper
@@ -35,13 +36,13 @@ class GoalkeeperEvent(Event):
     save_six_yard_box = models.BooleanField(default=False)
     keeper_save_in_the_box = models.BooleanField(default=False)
     keeper_save_total = models.BooleanField(default=False)
-    
+
     # Penalties
     keeper_penalty_saved = models.BooleanField(default=False)
     penalty_shootout_saved = models.BooleanField(default=False)
     penalty_shootout_saved_gk = models.BooleanField(default=False)
     penalty_shootout_conceded_gk = models.BooleanField(default=False)
-    
+
     # Other actions
     keeper_smother = models.BooleanField(default=False)
     keeper_sweeper_lost = models.BooleanField(default=False)
@@ -51,8 +52,8 @@ class GoalkeeperEvent(Event):
 
     class Meta:
         db_table = 'sbapi_event_goalkeeping'  # Specific table name
-        verbose_name = 'Goalkeeper Event'
-        verbose_name_plural = 'Goalkeeper Events'
+        verbose_name = 'Events - Goalkeeper'
+        verbose_name_plural = 'Events - Goalkeeper'
         indexes = [
             *Event.Meta.indexes,  # Include parent's indexes
             models.Index(fields=['keeper_diving_save']),

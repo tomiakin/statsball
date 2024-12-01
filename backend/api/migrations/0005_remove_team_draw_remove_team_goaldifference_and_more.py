@@ -46,7 +46,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TeamParticipation',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('position', models.IntegerField()),
                 ('playedGames', models.IntegerField()),
                 ('won', models.IntegerField()),
@@ -54,8 +55,10 @@ class Migration(migrations.Migration):
                 ('lost', models.IntegerField()),
                 ('points', models.IntegerField()),
                 ('goalDifference', models.IntegerField()),
-                ('league', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to='api.league')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to='api.team')),
+                ('league', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='participations', to='api.league')),
+                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='participations', to='api.team')),
             ],
             options={
                 'unique_together': {('team', 'league')},
@@ -64,6 +67,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='standings',
             name='teams',
-            field=models.ManyToManyField(related_name='standings', to='api.teamparticipation'),
+            field=models.ManyToManyField(
+                related_name='standings', to='api.teamparticipation'),
         ),
     ]

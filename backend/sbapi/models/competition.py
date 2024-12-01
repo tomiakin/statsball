@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Competition(models.Model):
     """Core competition/league information"""
     competition_id = models.AutoField(primary_key=True)
@@ -17,6 +18,7 @@ class Competition(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.country})"
+
 
 class Season(models.Model):
     """Season information for a competition"""

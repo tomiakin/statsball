@@ -2,6 +2,7 @@
 
 from api.core.imports import *
 
+
 class CompetitionMatchesView(BaseStatsBombView):
     def get(self, request, competition_id, season_id):
         try:

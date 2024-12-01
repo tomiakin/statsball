@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 
+
 class Player(models.Model):
     name = models.CharField(max_length=100)
     nationality = models.CharField(max_length=100)
@@ -9,10 +10,13 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
-class League(models.Model): # add flag goals scored etc etc, date time is also wrong, # add season
+
+class League(models.Model):  # add flag goals scored etc etc, date time is also wrong, # add season
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=10, unique=True)  # Unique code for the league (e.g., 'PL' for Premier League)
-    emblem = models.URLField(null=True, blank=True)  # Optional league emblem URL
+    # Unique code for the league (e.g., 'PL' for Premier League)
+    code = models.CharField(max_length=10, unique=True)
+    # Optional league emblem URL
+    emblem = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -20,7 +24,8 @@ class League(models.Model): # add flag goals scored etc etc, date time is also w
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
-    short_name = models.CharField(max_length=50, null=True, blank=True)  # Short name for display
+    short_name = models.CharField(
+        max_length=50, null=True, blank=True)  # Short name for display
     crest = models.URLField()  # URL for team crest
 
     def __str__(self):
@@ -28,8 +33,10 @@ class Team(models.Model):
 
 
 class TeamParticipation(models.Model):
-    team = models.ForeignKey(Team, related_name='participations', on_delete=models.CASCADE)
-    league = models.ForeignKey(League, related_name='participations', on_delete=models.CASCADE)
+    team = models.ForeignKey(
+        Team, related_name='participations', on_delete=models.CASCADE)
+    league = models.ForeignKey(
+        League, related_name='participations', on_delete=models.CASCADE)
     position = models.IntegerField()
     playedGames = models.IntegerField()
     won = models.IntegerField()
@@ -39,19 +46,21 @@ class TeamParticipation(models.Model):
     goalDifference = models.IntegerField()
 
     class Meta:
-        unique_together = ('team', 'league')  # Ensures one participation record per team-league combo
+        # Ensures one participation record per team-league combo
+        unique_together = ('team', 'league')
 
     def __str__(self):
         return f"{self.team.name} in {self.league.name}"
 
 
 class Standings(models.Model):
-    league = models.ForeignKey(League, related_name='standings', on_delete=models.CASCADE)  # Relation to League
+    league = models.ForeignKey(
+        League, related_name='standings', on_delete=models.CASCADE)  # Relation to League
     season = models.CharField(max_length=100)
-    updated_at = models.DateTimeField(auto_now=True)  # Tracks when standings were last updated
-    teams = models.ManyToManyField(TeamParticipation, related_name='standings')  # Relationship to team participations
+    # Tracks when standings were last updated
+    updated_at = models.DateTimeField(auto_now=True)
+    # Relationship to team participations
+    teams = models.ManyToManyField(TeamParticipation, related_name='standings')
 
     def __str__(self):
         return f"{self.league.name} Standings for {self.season}"
-
-

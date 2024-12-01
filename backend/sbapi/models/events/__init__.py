@@ -9,7 +9,7 @@ from .summary import SummaryEvent
 __all__ = [
     'Event',
     'PassEvent',
-    'ShootingEvent', 
+    'ShootingEvent',
     'DefendingEvent',
     'GoalkeeperEvent',
     'PossessionEvent',

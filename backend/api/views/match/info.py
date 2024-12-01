@@ -2,8 +2,8 @@
 # GET COMP MACTHES - shows everyhting u need/ want, season, score, time etc, referee, date
 # GET MATCH LINEUPS - focuses on players, eg their name, number, if thye stayred, and why, if they got a card (and why and time)
 # GET MATCH INFO - focuses on team stuff, its a list of match events it shows evryhting lineups shows the difference is that these
-# are events that are in info type, tactical cnage see, 
-# eg start of matc formaiton change, sub time eg formation/tactic and when, 
+# are events that are in info type, tactical cnage see,
+# eg start of matc formaiton change, sub time eg formation/tactic and when,
 from api.core.imports import *
 
 

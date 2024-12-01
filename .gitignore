@@ -168,5 +168,6 @@ cython_debug/
 
 # Personal
 docs/
-repomix-output.txt
-backend/sbapi/services/
+backend/repomix-output.txt
+backend/sbapi/services
+backend/sbapi/management

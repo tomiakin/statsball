@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Competition',
             fields=[
-                ('competition_id', models.AutoField(primary_key=True, serialize=False)),
+                ('competition_id', models.AutoField(
+                    primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=100)),
                 ('country', models.CharField(max_length=100)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
@@ -29,7 +30,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Player',
             fields=[
-                ('player_id', models.IntegerField(primary_key=True, serialize=False)),
+                ('player_id', models.IntegerField(
+                    primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=100)),
                 ('height', models.IntegerField(null=True)),
                 ('weight', models.IntegerField(null=True)),
@@ -48,13 +50,15 @@ class Migration(migrations.Migration):
                 ('is_current', models.BooleanField(default=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
-                ('competition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.competition')),
+                ('competition', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.competition')),
             ],
         ),
         migrations.CreateModel(
             name='Match',
             fields=[
-                ('match_id', models.IntegerField(primary_key=True, serialize=False)),
+                ('match_id', models.IntegerField(
+                    primary_key=True, serialize=False)),
                 ('start_datetime', models.DateTimeField()),
                 ('venue', models.CharField(max_length=200)),
                 ('attendance', models.IntegerField(null=True)),
@@ -68,7 +72,8 @@ class Migration(migrations.Migration):
                 ('home_score_et', models.IntegerField(null=True)),
                 ('away_score_et', models.IntegerField(null=True)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
-                ('competition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.season')),
+                ('competition', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.season')),
             ],
         ),
         migrations.CreateModel(
@@ -119,9 +124,12 @@ class Migration(migrations.Migration):
                 ('void_yellow_card', models.BooleanField(default=False)),
                 ('sub_on', models.BooleanField(default=False)),
                 ('sub_off', models.BooleanField(default=False)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Summary Event',
@@ -197,11 +205,15 @@ class Migration(migrations.Migration):
                 ('shot_set_piece', models.BooleanField(default=False)),
                 ('penalty_missed', models.BooleanField(default=False)),
                 ('penalty_scored', models.BooleanField(default=False)),
-                ('penalty_shootout_missed_off_target', models.BooleanField(default=False)),
+                ('penalty_shootout_missed_off_target',
+                 models.BooleanField(default=False)),
                 ('penalty_shootout_scored', models.BooleanField(default=False)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Shooting Event',
@@ -249,9 +261,12 @@ class Migration(migrations.Migration):
                 ('penalty_won', models.BooleanField(default=False)),
                 ('offside_given', models.BooleanField(default=False)),
                 ('offside_provoked', models.BooleanField(default=False)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Possession Event',
@@ -309,7 +324,8 @@ class Migration(migrations.Migration):
                 ('pass_corner_accurate', models.BooleanField(default=False)),
                 ('pass_corner_inaccurate', models.BooleanField(default=False)),
                 ('pass_cross_accurate', models.BooleanField(default=False)),
-                ('pass_cross_blocked_defensive', models.BooleanField(default=False)),
+                ('pass_cross_blocked_defensive',
+                 models.BooleanField(default=False)),
                 ('pass_cross_inaccurate', models.BooleanField(default=False)),
                 ('pass_freekick', models.BooleanField(default=False)),
                 ('pass_freekick_accurate', models.BooleanField(default=False)),
@@ -329,13 +345,18 @@ class Migration(migrations.Migration):
                 ('short_pass_accurate', models.BooleanField(default=False)),
                 ('short_pass_inaccurate', models.BooleanField(default=False)),
                 ('pass_through_ball_accurate', models.BooleanField(default=False)),
-                ('pass_through_ball_inaccurate', models.BooleanField(default=False)),
+                ('pass_through_ball_inaccurate',
+                 models.BooleanField(default=False)),
                 ('big_chance_created', models.BooleanField(default=False)),
-                ('successful_final_third_passes', models.BooleanField(default=False)),
+                ('successful_final_third_passes',
+                 models.BooleanField(default=False)),
                 ('throw_in', models.BooleanField(default=False)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Passing Event',
@@ -346,7 +367,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MatchTeamStats',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('is_home', models.BooleanField()),
                 ('field', models.CharField(max_length=10)),
                 ('average_age', models.FloatField()),
@@ -354,8 +376,10 @@ class Migration(migrations.Migration):
                 ('country_name', models.CharField(max_length=100)),
                 ('running_score', models.IntegerField()),
                 ('stats', models.JSONField(default=dict, help_text='\n    Stores team statistics by minute including:\n    - minutesWithStats\n    - ratings\n    - shots metrics\n    - possession metrics\n    - passing metrics\n    - aerial metrics\n    - corners metrics\n    - throw-ins metrics\n    And other match statistics\n    ')),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Match team statistic',
@@ -365,7 +389,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MatchPlayer',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('shirt_no', models.IntegerField()),
                 ('position', models.CharField(max_length=20)),
                 ('field', models.CharField(max_length=10)),
@@ -376,20 +401,25 @@ class Migration(migrations.Migration):
                 ('weight', models.IntegerField()),
                 ('stats', models.JSONField(default=dict)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
         ),
         migrations.AddField(
             model_name='match',
             name='away_team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='away_matches', to='sbapi.team'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='away_matches', to='sbapi.team'),
         ),
         migrations.AddField(
             model_name='match',
             name='home_team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='home_matches', to='sbapi.team'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='home_matches', to='sbapi.team'),
         ),
         migrations.CreateModel(
             name='GoalkeeperEvent',
@@ -443,15 +473,19 @@ class Migration(migrations.Migration):
                 ('keeper_penalty_saved', models.BooleanField(default=False)),
                 ('penalty_shootout_saved', models.BooleanField(default=False)),
                 ('penalty_shootout_saved_gk', models.BooleanField(default=False)),
-                ('penalty_shootout_conceded_gk', models.BooleanField(default=False)),
+                ('penalty_shootout_conceded_gk',
+                 models.BooleanField(default=False)),
                 ('keeper_smother', models.BooleanField(default=False)),
                 ('keeper_sweeper_lost', models.BooleanField(default=False)),
                 ('parried_danger', models.BooleanField(default=False)),
                 ('parried_safe', models.BooleanField(default=False)),
                 ('punches', models.BooleanField(default=False)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Goalkeeper Event',
@@ -514,9 +548,12 @@ class Migration(migrations.Migration):
                 ('tackle_lost', models.BooleanField(default=False)),
                 ('tackle_won', models.BooleanField(default=False)),
                 ('penalty_conceded', models.BooleanField(default=False)),
-                ('match', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
-                ('player', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
+                ('match', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.match')),
+                ('player', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.CASCADE, to='sbapi.player')),
+                ('team', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.team')),
             ],
             options={
                 'verbose_name': 'Defending Event',
@@ -527,7 +564,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Formation',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('formation_id', models.IntegerField()),
                 ('formation_name', models.CharField(max_length=10)),
                 ('captain_player_id', models.IntegerField()),
@@ -539,7 +577,8 @@ class Migration(migrations.Migration):
                 ('formation_slots', models.JSONField(default=list)),
                 ('formation_positions', models.JSONField(default=list)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
-                ('match_team_stats', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sbapi.matchteamstats')),
+                ('match_team_stats', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='sbapi.matchteamstats')),
             ],
             options={
                 'indexes': [models.Index(fields=['formation_name'], name='sbapi_forma_formati_ab138a_idx'), models.Index(fields=['captain_player_id'], name='sbapi_forma_captain_756fc3_idx')],
@@ -548,7 +587,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='season',
-            index=models.Index(fields=['is_current'], name='sbapi_seaso_is_curr_bc5403_idx'),
+            index=models.Index(fields=['is_current'],
+                               name='sbapi_seaso_is_curr_bc5403_idx'),
         ),
         migrations.AlterUniqueTogether(
             name='season',
@@ -556,123 +596,153 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='summaryevent',
-            index=models.Index(fields=['match', 'minute'], name='sbapi_event_match_i_787265_idx'),
+            index=models.Index(
+                fields=['match', 'minute'], name='sbapi_event_match_i_787265_idx'),
         ),
         migrations.AddIndex(
             model_name='summaryevent',
-            index=models.Index(fields=['player', 'type'], name='sbapi_event_player__b52555_idx'),
+            index=models.Index(
+                fields=['player', 'type'], name='sbapi_event_player__b52555_idx'),
         ),
         migrations.AddIndex(
             model_name='summaryevent',
-            index=models.Index(fields=['team', 'type'], name='sbapi_event_team_id_ef028a_idx'),
+            index=models.Index(fields=['team', 'type'],
+                               name='sbapi_event_team_id_ef028a_idx'),
         ),
         migrations.AddIndex(
             model_name='summaryevent',
-            index=models.Index(fields=['event_id'], name='sbapi_event_event_i_376715_idx'),
+            index=models.Index(fields=['event_id'],
+                               name='sbapi_event_event_i_376715_idx'),
         ),
         migrations.AddIndex(
             model_name='summaryevent',
-            index=models.Index(fields=['card_type'], name='sbapi_event_card_ty_01bd0b_idx'),
+            index=models.Index(fields=['card_type'],
+                               name='sbapi_event_card_ty_01bd0b_idx'),
         ),
         migrations.AddIndex(
             model_name='summaryevent',
-            index=models.Index(fields=['sub_on', 'sub_off'], name='sbapi_event_sub_on_919522_idx'),
+            index=models.Index(
+                fields=['sub_on', 'sub_off'], name='sbapi_event_sub_on_919522_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['match', 'minute'], name='sbapi_event_match_i_600bbe_idx'),
+            index=models.Index(
+                fields=['match', 'minute'], name='sbapi_event_match_i_600bbe_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['player', 'type'], name='sbapi_event_player__4d3a71_idx'),
+            index=models.Index(
+                fields=['player', 'type'], name='sbapi_event_player__4d3a71_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['team', 'type'], name='sbapi_event_team_id_3a6f6a_idx'),
+            index=models.Index(fields=['team', 'type'],
+                               name='sbapi_event_team_id_3a6f6a_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['event_id'], name='sbapi_event_event_i_678115_idx'),
+            index=models.Index(fields=['event_id'],
+                               name='sbapi_event_event_i_678115_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['is_goal'], name='sbapi_event_is_goal_c0daab_idx'),
+            index=models.Index(fields=['is_goal'],
+                               name='sbapi_event_is_goal_c0daab_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['is_shot'], name='sbapi_event_is_shot_d8c23b_idx'),
+            index=models.Index(fields=['is_shot'],
+                               name='sbapi_event_is_shot_d8c23b_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['shot_on_target'], name='sbapi_event_shot_on_496be4_idx'),
+            index=models.Index(
+                fields=['shot_on_target'], name='sbapi_event_shot_on_496be4_idx'),
         ),
         migrations.AddIndex(
             model_name='shootingevent',
-            index=models.Index(fields=['big_chance_scored'], name='sbapi_event_big_cha_d3b014_idx'),
+            index=models.Index(
+                fields=['big_chance_scored'], name='sbapi_event_big_cha_d3b014_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['match', 'minute'], name='sbapi_event_match_i_0de657_idx'),
+            index=models.Index(
+                fields=['match', 'minute'], name='sbapi_event_match_i_0de657_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['player', 'type'], name='sbapi_event_player__08d47c_idx'),
+            index=models.Index(
+                fields=['player', 'type'], name='sbapi_event_player__08d47c_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['team', 'type'], name='sbapi_event_team_id_082591_idx'),
+            index=models.Index(fields=['team', 'type'],
+                               name='sbapi_event_team_id_082591_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['event_id'], name='sbapi_event_event_i_0506ad_idx'),
+            index=models.Index(fields=['event_id'],
+                               name='sbapi_event_event_i_0506ad_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['dribble_won'], name='sbapi_event_dribble_336758_idx'),
+            index=models.Index(fields=['dribble_won'],
+                               name='sbapi_event_dribble_336758_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['dispossessed'], name='sbapi_event_disposs_3e2477_idx'),
+            index=models.Index(fields=['dispossessed'],
+                               name='sbapi_event_disposs_3e2477_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['foul_committed'], name='sbapi_event_foul_co_25c843_idx'),
+            index=models.Index(
+                fields=['foul_committed'], name='sbapi_event_foul_co_25c843_idx'),
         ),
         migrations.AddIndex(
             model_name='possessionevent',
-            index=models.Index(fields=['touches'], name='sbapi_event_touches_689c94_idx'),
+            index=models.Index(fields=['touches'],
+                               name='sbapi_event_touches_689c94_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['match', 'minute'], name='sbapi_event_match_i_aefb3b_idx'),
+            index=models.Index(
+                fields=['match', 'minute'], name='sbapi_event_match_i_aefb3b_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['player', 'type'], name='sbapi_event_player__6abd5a_idx'),
+            index=models.Index(
+                fields=['player', 'type'], name='sbapi_event_player__6abd5a_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['team', 'type'], name='sbapi_event_team_id_054a1e_idx'),
+            index=models.Index(fields=['team', 'type'],
+                               name='sbapi_event_team_id_054a1e_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['event_id'], name='sbapi_event_event_i_14931d_idx'),
+            index=models.Index(fields=['event_id'],
+                               name='sbapi_event_event_i_14931d_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['pass_accurate'], name='sbapi_event_pass_ac_ba36de_idx'),
+            index=models.Index(
+                fields=['pass_accurate'], name='sbapi_event_pass_ac_ba36de_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['assist'], name='sbapi_event_assist_d8fa64_idx'),
+            index=models.Index(fields=['assist'],
+                               name='sbapi_event_assist_d8fa64_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['pass_key'], name='sbapi_event_pass_ke_26ed2a_idx'),
+            index=models.Index(fields=['pass_key'],
+                               name='sbapi_event_pass_ke_26ed2a_idx'),
         ),
         migrations.AddIndex(
             model_name='passevent',
-            index=models.Index(fields=['big_chance_created'], name='sbapi_event_big_cha_ff1221_idx'),
+            index=models.Index(
+                fields=['big_chance_created'], name='sbapi_event_big_cha_ff1221_idx'),
         ),
         migrations.AlterUniqueTogether(
             name='matchteamstats',
@@ -680,7 +750,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='matchplayer',
-            index=models.Index(fields=['position'], name='sbapi_match_positio_d56e17_idx'),
+            index=models.Index(fields=['position'],
+                               name='sbapi_match_positio_d56e17_idx'),
         ),
         migrations.AlterUniqueTogether(
             name='matchplayer',
@@ -688,82 +759,102 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='match',
-            index=models.Index(fields=['start_datetime'], name='sbapi_match_start_d_b479c2_idx'),
+            index=models.Index(
+                fields=['start_datetime'], name='sbapi_match_start_d_b479c2_idx'),
         ),
         migrations.AddIndex(
             model_name='match',
-            index=models.Index(fields=['home_team'], name='sbapi_match_home_te_17af12_idx'),
+            index=models.Index(fields=['home_team'],
+                               name='sbapi_match_home_te_17af12_idx'),
         ),
         migrations.AddIndex(
             model_name='match',
-            index=models.Index(fields=['away_team'], name='sbapi_match_away_te_c1e3d5_idx'),
+            index=models.Index(fields=['away_team'],
+                               name='sbapi_match_away_te_c1e3d5_idx'),
         ),
         migrations.AddIndex(
             model_name='match',
-            index=models.Index(fields=['referee_id'], name='sbapi_match_referee_20666a_idx'),
+            index=models.Index(fields=['referee_id'],
+                               name='sbapi_match_referee_20666a_idx'),
         ),
         migrations.AddIndex(
             model_name='match',
-            index=models.Index(fields=['competition'], name='sbapi_match_competi_0d17da_idx'),
+            index=models.Index(fields=['competition'],
+                               name='sbapi_match_competi_0d17da_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['match', 'minute'], name='sbapi_event_match_i_13e256_idx'),
+            index=models.Index(
+                fields=['match', 'minute'], name='sbapi_event_match_i_13e256_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['player', 'type'], name='sbapi_event_player__c1b44b_idx'),
+            index=models.Index(
+                fields=['player', 'type'], name='sbapi_event_player__c1b44b_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['team', 'type'], name='sbapi_event_team_id_08b887_idx'),
+            index=models.Index(fields=['team', 'type'],
+                               name='sbapi_event_team_id_08b887_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['event_id'], name='sbapi_event_event_i_dcaa0e_idx'),
+            index=models.Index(fields=['event_id'],
+                               name='sbapi_event_event_i_dcaa0e_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['keeper_diving_save'], name='sbapi_event_keeper__21d8d4_idx'),
+            index=models.Index(
+                fields=['keeper_diving_save'], name='sbapi_event_keeper__21d8d4_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['keeper_save_total'], name='sbapi_event_keeper__a677af_idx'),
+            index=models.Index(
+                fields=['keeper_save_total'], name='sbapi_event_keeper__a677af_idx'),
         ),
         migrations.AddIndex(
             model_name='goalkeeperevent',
-            index=models.Index(fields=['keeper_penalty_saved'], name='sbapi_event_keeper__16ced3_idx'),
+            index=models.Index(
+                fields=['keeper_penalty_saved'], name='sbapi_event_keeper__16ced3_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['match', 'minute'], name='sbapi_event_match_i_6313f6_idx'),
+            index=models.Index(
+                fields=['match', 'minute'], name='sbapi_event_match_i_6313f6_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['player', 'type'], name='sbapi_event_player__083cd7_idx'),
+            index=models.Index(
+                fields=['player', 'type'], name='sbapi_event_player__083cd7_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['team', 'type'], name='sbapi_event_team_id_27df09_idx'),
+            index=models.Index(fields=['team', 'type'],
+                               name='sbapi_event_team_id_27df09_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['event_id'], name='sbapi_event_event_i_e9ff91_idx'),
+            index=models.Index(fields=['event_id'],
+                               name='sbapi_event_event_i_e9ff91_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['is_tackle'], name='sbapi_event_is_tack_00e724_idx'),
+            index=models.Index(fields=['is_tackle'],
+                               name='sbapi_event_is_tack_00e724_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['is_interception'], name='sbapi_event_is_inte_428499_idx'),
+            index=models.Index(
+                fields=['is_interception'], name='sbapi_event_is_inte_428499_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['is_clearance'], name='sbapi_event_is_clea_e456d8_idx'),
+            index=models.Index(fields=['is_clearance'],
+                               name='sbapi_event_is_clea_e456d8_idx'),
         ),
         migrations.AddIndex(
             model_name='defendingevent',
-            index=models.Index(fields=['aerial_success'], name='sbapi_event_aerial__dc1179_idx'),
+            index=models.Index(
+                fields=['aerial_success'], name='sbapi_event_aerial__dc1179_idx'),
         ),
     ]
