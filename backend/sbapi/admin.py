@@ -7,7 +7,6 @@ from .models import (
     Player,
     Match,
     Formation,
-    MatchTeamStats,
     MatchPlayer,
     PassEvent,
     ShootingEvent,
@@ -82,20 +81,13 @@ class MatchAdmin(admin.ModelAdmin):
 
 @admin.register(Formation)
 class FormationAdmin(admin.ModelAdmin):
-    list_display = ('match_team_stats', 'formation_name', 'period',
-                    'start_minute_expanded', 'end_minute_expanded')
-    list_filter = ('formation_name', 'period')
-    search_fields = ('match_team_stats__team__name',)
+    list_display = ('match', 'team', 'formation_name', 'start_minute', 'end_minute')
+    list_filter = ('formation_name',)
+    search_fields = ('match__home_team__name', 'match__away_team__name', 'team__name', 'formation_name')
     list_per_page = 50
 
 
-@admin.register(MatchTeamStats)
-class MatchTeamStatsAdmin(admin.ModelAdmin):
-    list_display = ('match', 'team', 'is_home', 'manager_name', 'average_age')
-    list_filter = ('is_home',)
-    search_fields = ('team__name', 'manager_name')
-    raw_id_fields = ('match', 'team')
-    list_per_page = 50
+
 
 
 @admin.register(MatchPlayer)
@@ -142,27 +134,10 @@ class ShootingEventAdmin(BaseEventAdmin):
 @admin.register(DefendingEvent)
 class DefendingEventAdmin(BaseEventAdmin):
     list_display = BaseEventAdmin.list_display + ('duel_aerial_won', 'tackle_won', 'interception_won', 'aerial_success',
-                                                  'offensive_duel', 'defensive_duel', 'penalty_conceded')
+                                                  'offensive_duel', 'defensive_duel')
     list_filter = BaseEventAdmin.list_filter + (
-        'tackle_won', 'interception_won', 'duel_aerial_won', 'offensive_duel', 'defensive_duel', 'penalty_conceded'
+        'tackle_won', 'interception_won', 'duel_aerial_won', 'offensive_duel', 'defensive_duel', 'goal_own', 
     )
-
-
-class IsGoalkeeperFilter(admin.SimpleListFilter):
-    title = 'Player Position'
-    parameter_name = 'is_goalkeeper'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('yes', 'Goalkeeper'),
-            ('no', 'Outfield Player'),
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'yes':
-            return queryset.filter(player__matchplayer__position='GK')
-        if self.value() == 'no':
-            return queryset.exclude(player__matchplayer__position='GK')
 
 
 @admin.register(GoalkeeperEvent)
@@ -172,7 +147,7 @@ class GoalkeeperEventAdmin(BaseEventAdmin):
         'keeper_claim_won',
         'keeper_penalty_saved'
     )
-    list_filter = (IsGoalkeeperFilter,) + BaseEventAdmin.list_filter + (
+    list_filter = BaseEventAdmin.list_filter + (
         'keeper_save_total',
         'keeper_claim_won',
         'keeper_penalty_saved'
@@ -202,4 +177,4 @@ class SummaryEventAdmin(BaseEventAdmin):
     list_display = BaseEventAdmin.list_display + \
         ('card_type', 'sub_on', 'sub_off', 'foul_committed')
     list_filter = BaseEventAdmin.list_filter + \
-        ('card_type', 'sub_on', 'sub_off', 'foul_committed')
+        ('card_type', 'sub_on', 'sub_off', 'foul_committed', 'penalty_conceded', 'penalty_won')

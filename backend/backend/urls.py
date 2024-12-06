@@ -24,4 +24,5 @@ urlpatterns = [
         path('', include('api.urls.match')),
         path('', include('api.urls.player')),
     ])),
+    path('sbapi/v1/', include('sbapi.v1.urls')),
 ]

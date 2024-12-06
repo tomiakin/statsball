@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-
 class Match(models.Model):
     match_id = models.IntegerField(primary_key=True)
     season = models.ForeignKey('sbapi.Season', on_delete=models.CASCADE)
@@ -12,8 +11,8 @@ class Match(models.Model):
     attendance = models.IntegerField(null=True)
 
     # Referee information
-    referee_id = models.IntegerField(null=True)  # New field
-    referee_name = models.CharField(max_length=100, null=True)  # Updated field
+    referee_id = models.IntegerField(null=True)
+    referee_name = models.CharField(max_length=100, null=True)
 
     # Team relationships
     home_team = models.ForeignKey(
@@ -21,8 +20,16 @@ class Match(models.Model):
     away_team = models.ForeignKey(
         'sbapi.Team', related_name='away_matches', on_delete=models.CASCADE)
 
-    # Scores - we'll keep these at match level since they're the official record
-    score = models.CharField(max_length=10)  # Raw score format e.g., "4 : 3"
+    # Manager information (moved from MatchTeamStats)
+    home_manager_name = models.CharField(max_length=100, null=True)
+    away_manager_name = models.CharField(max_length=100, null=True)
+    
+    # Team average age (moved from MatchTeamStats)
+    home_team_average_age = models.FloatField(null=True)
+    away_team_average_age = models.FloatField(null=True)
+
+    # Scores
+    # score = models.CharField(max_length=10)
     home_score_ht = models.IntegerField()
     away_score_ht = models.IntegerField()
     home_score_ft = models.IntegerField()
@@ -46,6 +53,10 @@ class Match(models.Model):
     @property
     def competition(self):
         return self.season.competition
+
+    @property
+    def score(self):
+        return f"{self.home_score_ft} : {self.away_score_ft}"
 
     def __str__(self):
         return f"{self.home_team} vs {self.away_team} ({self.start_datetime.date()})"
