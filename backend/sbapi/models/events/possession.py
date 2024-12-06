@@ -6,7 +6,8 @@ from .base import Event
 class PossessionEvent(Event):
     """Possession-related event details"""
     # Set pieces
-    corner_awarded = models.BooleanField(default=False) # recorded as h/a for conceded/won
+    corner_awarded = models.BooleanField(
+        default=False)  # recorded as h/a for conceded/won
 
     # Ball control
     dispossessed = models.BooleanField(default=False)

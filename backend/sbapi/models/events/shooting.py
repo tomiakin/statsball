@@ -62,7 +62,7 @@ class ShootingEvent(Event):
 
     # Penalties (note diff in open play vs shootouts)
     penalty_missed = models.BooleanField(default=False)
-    penalty_scored = models.BooleanField(default=False) 
+    penalty_scored = models.BooleanField(default=False)
     penalty_shootout_missed_off_target = models.BooleanField(default=False)
     penalty_shootout_scored = models.BooleanField(default=False)
 

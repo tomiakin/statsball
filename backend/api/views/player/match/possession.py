@@ -32,7 +32,8 @@ class PlayerMatchPossessionView(BaseStatsBombView):
 
         except Exception as e:
             logger.error(f"Error in PlayerMatchPossessionView: {str(e)}")
-            return self.handle_error(e, f"Failed to fetch possession data for player {player_name}")
+            return self.handle_error(
+                e, f"Failed to fetch possession data for player {player_name}")
 
     def _process_possession_data(self, match_events, player_name):
         """Process raw possession data"""

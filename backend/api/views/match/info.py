@@ -42,7 +42,8 @@ class MatchInformationView(BaseStatsBombView):
                     'error': f'No information events found for match {match_id}'
                 }, status=404)
 
-            # Define columns to keep - combine base event columns and info-specific columns
+            # Define columns to keep - combine base event columns and
+            # info-specific columns
             info_columns = self.event_columns + [
                 'bad_behaviour_card', 'tactics', 'replacement', 'outcome'
             ]
@@ -159,4 +160,5 @@ class MatchInformationView(BaseStatsBombView):
 
         except Exception as e:
             logger.error(f"Error in MatchInformationView: {str(e)}")
-            return self.handle_error(e, f"Failed to fetch match information for match {match_id}")
+            return self.handle_error(
+                e, f"Failed to fetch match information for match {match_id}")

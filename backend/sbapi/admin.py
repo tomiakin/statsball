@@ -81,13 +81,19 @@ class MatchAdmin(admin.ModelAdmin):
 
 @admin.register(Formation)
 class FormationAdmin(admin.ModelAdmin):
-    list_display = ('match', 'team', 'formation_name', 'start_minute', 'end_minute')
+    list_display = (
+        'match',
+        'team',
+        'formation_name',
+        'start_minute',
+        'end_minute')
     list_filter = ('formation_name',)
-    search_fields = ('match__home_team__name', 'match__away_team__name', 'team__name', 'formation_name')
+    search_fields = (
+        'match__home_team__name',
+        'match__away_team__name',
+        'team__name',
+        'formation_name')
     list_per_page = 50
-
-
-
 
 
 @admin.register(MatchPlayer)
@@ -136,7 +142,7 @@ class DefendingEventAdmin(BaseEventAdmin):
     list_display = BaseEventAdmin.list_display + ('duel_aerial_won', 'tackle_won', 'interception_won', 'aerial_success',
                                                   'offensive_duel', 'defensive_duel')
     list_filter = BaseEventAdmin.list_filter + (
-        'tackle_won', 'interception_won', 'duel_aerial_won', 'offensive_duel', 'defensive_duel', 'goal_own', 
+        'tackle_won', 'interception_won', 'duel_aerial_won', 'offensive_duel', 'defensive_duel', 'goal_own',
     )
 
 
@@ -177,4 +183,9 @@ class SummaryEventAdmin(BaseEventAdmin):
     list_display = BaseEventAdmin.list_display + \
         ('card_type', 'sub_on', 'sub_off', 'foul_committed')
     list_filter = BaseEventAdmin.list_filter + \
-        ('card_type', 'sub_on', 'sub_off', 'foul_committed', 'penalty_conceded', 'penalty_won')
+        ('card_type',
+         'sub_on',
+         'sub_off',
+         'foul_committed',
+         'penalty_conceded',
+         'penalty_won')

@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
+
 class BaseSerializer(serializers.ModelSerializer):
     """Base serializer adding success wrapper"""
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if isinstance(data, list):
@@ -11,6 +13,7 @@ class BaseSerializer(serializers.ModelSerializer):
                 'message': None
             }
         return data
+
 
 class HalModelSerializer(BaseSerializer):
     """Base serializer that adds HAL-style _links"""

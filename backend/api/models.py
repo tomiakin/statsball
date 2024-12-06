@@ -11,7 +11,8 @@ class Player(models.Model):
         return self.name
 
 
-class League(models.Model):  # add flag goals scored etc etc, date time is also wrong, # add season
+class League(
+        models.Model):  # add flag goals scored etc etc, date time is also wrong, # add season
     name = models.CharField(max_length=100)
     # Unique code for the league (e.g., 'PL' for Premier League)
     code = models.CharField(max_length=10, unique=True)

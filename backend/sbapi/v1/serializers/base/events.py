@@ -9,13 +9,14 @@ from ....models.events import (
 )
 from ..base.base import BaseSerializer
 
+
 class BaseEventSerializer(BaseSerializer):
     """Base serializer for common event fields"""
     team_name = serializers.CharField(source='team.name')
     player_name = serializers.CharField(source='player.name', allow_null=True)
-    
+
     class Meta:
-        model = SummaryEvent 
+        model = SummaryEvent
         abstract = True
         fields = [
             'event_id',
@@ -33,6 +34,7 @@ class BaseEventSerializer(BaseSerializer):
             'situation'
         ]
 
+
 class DefendingEventSerializer(BaseEventSerializer):
     class Meta(BaseEventSerializer.Meta):
         model = DefendingEvent
@@ -49,6 +51,7 @@ class DefendingEventSerializer(BaseEventSerializer):
             'error_leads_to_goal',
             'error_leads_to_shot',
         ]
+
 
 class GoalkeeperEventSerializer(BaseEventSerializer):
     class Meta(BaseEventSerializer.Meta):
@@ -68,6 +71,7 @@ class GoalkeeperEventSerializer(BaseEventSerializer):
             'save_low_right',
         ]
 
+
 class PassEventSerializer(BaseEventSerializer):
     class Meta(BaseEventSerializer.Meta):
         model = PassEvent
@@ -83,6 +87,7 @@ class PassEventSerializer(BaseEventSerializer):
             'successful_final_third_passes',
         ]
 
+
 class PossessionEventSerializer(BaseEventSerializer):
     class Meta(BaseEventSerializer.Meta):
         model = PossessionEvent
@@ -94,6 +99,7 @@ class PossessionEventSerializer(BaseEventSerializer):
             'penalty_won',
             'offside_given',
         ]
+
 
 class ShootingEventSerializer(BaseEventSerializer):
     class Meta(BaseEventSerializer.Meta):
@@ -111,6 +117,7 @@ class ShootingEventSerializer(BaseEventSerializer):
             'shot_six_yard_box',
         ]
 
+
 class SummaryEventSerializer(BaseEventSerializer):
     class Meta(BaseEventSerializer.Meta):
         model = SummaryEvent
@@ -124,6 +131,7 @@ class SummaryEventSerializer(BaseEventSerializer):
             'sub_off',
         ]
 
+
 # Factory function to get appropriate serializer
 EVENT_TYPE_SERIALIZERS = {
     'defending': DefendingEventSerializer,
@@ -133,6 +141,7 @@ EVENT_TYPE_SERIALIZERS = {
     'shooting': ShootingEventSerializer,
     'summary': SummaryEventSerializer,
 }
+
 
 def get_event_serializer(event_type):
     """Returns appropriate serializer based on event type"""

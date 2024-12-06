@@ -39,7 +39,8 @@ class PlayerMatchDefendingView(BaseStatsBombView):
 
         except Exception as e:
             logger.error(f"Error in PlayerMatchDefendingView: {str(e)}")
-            return self.handle_error(e, f"Failed to fetch defensive data for player {player_name}")
+            return self.handle_error(
+                e, f"Failed to fetch defensive data for player {player_name}")
 
     def _process_defensive_data(self, match_events, player_name):
         """Process raw defensive data"""

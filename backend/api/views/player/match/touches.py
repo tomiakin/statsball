@@ -25,7 +25,8 @@ class PlayerMatchTouchesView(BaseStatsBombView):
 
         except Exception as e:
             logger.error(f"Error in PlayerMatchTouchesView: {str(e)}")
-            return self.handle_error(e, f"Failed to fetch touch data for player {player_name}")
+            return self.handle_error(
+                e, f"Failed to fetch touch data for player {player_name}")
 
     def _get_player_touches(self, match_events, player_name):
         """Get all touch events for a player"""

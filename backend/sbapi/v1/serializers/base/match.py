@@ -2,19 +2,22 @@ from rest_framework import serializers
 from ....models import Match, Team, MatchPlayer, Formation
 from .base import BaseSerializer, HalModelSerializer
 
+
 class TeamBasicSerializer(serializers.Serializer):
     """Team serializer specifically for stats responses"""
     team_id = serializers.IntegerField()
     name = serializers.CharField()
     country = serializers.CharField()
 
+
 class LineupPlayerSerializer(BaseSerializer):
     """Simplified player information for lineups"""
     name = serializers.CharField(source='player.name')
-    
+
     class Meta:
         model = MatchPlayer
         fields = ['name', 'shirt_no', 'position']
+
 
 class TeamLineupSerializer(serializers.Serializer):
     """Serializer for single team lineup data"""
@@ -28,6 +31,7 @@ class TeamLineupSerializer(serializers.Serializer):
         child=serializers.DictField()
     )
 
+
 class LineupResponseSerializer(serializers.Serializer):
     """Serializer for complete lineup response data"""
     status = serializers.CharField(default='success')
@@ -40,12 +44,13 @@ class LineupResponseSerializer(serializers.Serializer):
             'away_team': TeamLineupSerializer(obj['away_team']).data
         }
 
+
 class MatchListSerializer(HalModelSerializer):
     """Simplified match list serializer"""
     home_team = TeamBasicSerializer()
     away_team = TeamBasicSerializer()
     _links = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Match
         fields = [
@@ -65,6 +70,7 @@ class MatchListSerializer(HalModelSerializer):
             'events': f'/sbapi/v1/matches/{obj.match_id}/events'
         }
 
+
 class MatchDetailSerializer(HalModelSerializer):
     """Detailed match information serializer"""
     home_team = TeamBasicSerializer()
@@ -72,7 +78,7 @@ class MatchDetailSerializer(HalModelSerializer):
     competition_name = serializers.CharField(source='season.competition.name')
     season_name = serializers.CharField(source='season.name')
     _links = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Match
         fields = [

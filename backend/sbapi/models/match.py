@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 class Match(models.Model):
     match_id = models.IntegerField(primary_key=True)
     season = models.ForeignKey('sbapi.Season', on_delete=models.CASCADE)
@@ -23,7 +24,7 @@ class Match(models.Model):
     # Manager information (moved from MatchTeamStats)
     home_manager_name = models.CharField(max_length=100, null=True)
     away_manager_name = models.CharField(max_length=100, null=True)
-    
+
     # Team average age (moved from MatchTeamStats)
     home_team_average_age = models.FloatField(null=True)
     away_team_average_age = models.FloatField(null=True)

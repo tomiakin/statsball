@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='League',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('code', models.CharField(max_length=10, unique=True)),
                 ('emblem', models.URLField(blank=True, null=True)),
@@ -24,7 +25,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Player',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('nationality', models.CharField(max_length=100)),
             ],
@@ -32,16 +34,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Team',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
-                ('short_name', models.CharField(blank=True, max_length=50, null=True)),
+                ('short_name', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('crest', models.URLField()),
             ],
         ),
         migrations.CreateModel(
             name='TeamParticipation',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('position', models.IntegerField()),
                 ('playedGames', models.IntegerField()),
                 ('won', models.IntegerField()),
@@ -49,8 +54,14 @@ class Migration(migrations.Migration):
                 ('lost', models.IntegerField()),
                 ('points', models.IntegerField()),
                 ('goalDifference', models.IntegerField()),
-                ('league', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to='api.league')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to='api.team')),
+                ('league',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='participations',
+                                   to='api.league')),
+                ('team',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='participations',
+                                   to='api.team')),
             ],
             options={
                 'unique_together': {('team', 'league')},
@@ -59,11 +70,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Standings',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('season', models.CharField(max_length=100)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('league', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='standings', to='api.league')),
-                ('teams', models.ManyToManyField(related_name='standings', to='api.teamparticipation')),
+                ('league',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='standings',
+                                   to='api.league')),
+                ('teams', models.ManyToManyField(
+                    related_name='standings', to='api.teamparticipation')),
             ],
         ),
     ]

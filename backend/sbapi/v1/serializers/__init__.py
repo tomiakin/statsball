@@ -1,9 +1,9 @@
 from .base.common import (
     BaseStatsSerializer,
-    BaseMatchStatsSerializer, 
+    BaseMatchStatsSerializer,
     BaseSeasonStatsSerializer,
     BasePlayerStatsSerializer,
-    BaseTeamStatsSerializer, 
+    BaseTeamStatsSerializer,
 )
 from .base.competition import (
     CompetitionListSerializer,

@@ -31,7 +31,8 @@ class GoalkeeperMatchView(BaseStatsBombView):
 
         except Exception as e:
             logger.error(f"Error in GoalkeeperMatchView: {str(e)}")
-            return self.handle_error(e, f"Failed to fetch goalkeeper data for player {player_name}")
+            return self.handle_error(
+                e, f"Failed to fetch goalkeeper data for player {player_name}")
 
     def _process_goalkeeper_data(self, match_events, player_name):
         """Process raw goalkeeper data"""
@@ -81,7 +82,8 @@ class GoalkeeperMatchView(BaseStatsBombView):
                     gk_type, 0) + 1
 
             # Update save statistics
-            if gk_type in ['Shot Saved', 'Shot Saved Off T', 'Shot Saved To Post', 'Penalty Saved']:
+            if gk_type in ['Shot Saved', 'Shot Saved Off T',
+                           'Shot Saved To Post', 'Penalty Saved']:
                 self._update_save_stats(stats, outcome)
 
             # Update distribution statistics

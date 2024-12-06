@@ -13,16 +13,21 @@ class SummaryEvent(Event):
     void_yellow_card = models.BooleanField(default=False)
 
     # Fouls
-    foul_committed = models.BooleanField(default=False) # player that gave foul away
-    foul_given = models.BooleanField(default=False) # player/team foul was given to
+    foul_committed = models.BooleanField(
+        default=False)  # player that gave foul away
+    foul_given = models.BooleanField(
+        default=False)  # player/team foul was given to
 
     # Penalty
     penalty_conceded = models.BooleanField(default=False)
     penalty_won = models.BooleanField(default=False)
 
     # Offsides
-    offside_given = models.BooleanField(default=False) # An event attributed to the player deemed to be in an offside position when a free kick is awarded
-    offside_provoked = models.BooleanField(default=False) # The deepest player in the defensive line when an offside has been given
+    # An event attributed to the player deemed to be in an offside position
+    # when a free kick is awarded
+    offside_given = models.BooleanField(default=False)
+    # The deepest player in the defensive line when an offside has been given
+    offside_provoked = models.BooleanField(default=False)
 
     # Substitutions
     sub_on = models.BooleanField(default=False)  # Renamed from is_sub_on
@@ -36,6 +41,6 @@ class SummaryEvent(Event):
             *Event.Meta.indexes,
             models.Index(fields=['card_type']),
             models.Index(fields=['foul_committed']),
-            models.Index(fields=['penalty_conceded', 'penalty_won' ]),
+            models.Index(fields=['penalty_conceded', 'penalty_won']),
             models.Index(fields=['sub_on', 'sub_off']),
         ]

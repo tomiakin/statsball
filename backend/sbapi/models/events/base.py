@@ -4,9 +4,12 @@ from django.db import models
 class Event(models.Model):
     """Base model for all match events, these fields are informative"""
     # Core identification
-    id = models.AutoField(primary_key=True)  # Django's auto-incrementing primary key
-    source_id = models.BigIntegerField()     # The original DataFrame id (2.755319e+09)
-    event_id = models.IntegerField()         # The original eventId that groups related actions (21, 22, etc)
+    # Django's auto-incrementing primary key
+    id = models.AutoField(primary_key=True)
+    # The original DataFrame id (2.755319e+09)
+    source_id = models.BigIntegerField()
+    # The original eventId that groups related actions (21, 22, etc)
+    event_id = models.IntegerField()
     match = models.ForeignKey('sbapi.Match', on_delete=models.CASCADE)
     team = models.ForeignKey('sbapi.Team', on_delete=models.CASCADE)
     player = models.ForeignKey(
@@ -17,7 +20,8 @@ class Event(models.Model):
     minute = models.IntegerField()  # Range: [0 to 102]
     second = models.FloatField(null=True)  # Range: [0.0 to 59.0]
     expanded_minute = models.IntegerField()  # Range: [0 to 108]
-    period = models.CharField(max_length=20)  # FirstHalf, SecondHalf, PenaltyShootout, FirstPeriodOfExtraTime, SecondPeriodOfExtraTime
+    # FirstHalf, SecondHalf, PenaltyShootout, FirstPeriodOfExtraTime, SecondPeriodOfExtraTime
+    period = models.CharField(max_length=20)
     max_minute = models.IntegerField()  # [102]
 
     # Location
@@ -36,7 +40,8 @@ class Event(models.Model):
     final_third = models.BooleanField(default=False)
 
     # Type and outcome
-    type = models.CharField(max_length=50)  # Pass, Shot, etc. (see type in docs/)
+    # Pass, Shot, etc. (see type in docs/)
+    type = models.CharField(max_length=50)
     outcome_type = models.CharField(
         max_length=20, null=True)  # Successful, Unsuccessful
 
@@ -48,7 +53,7 @@ class Event(models.Model):
 
     # Match context
     h_a = models.CharField(max_length=1)  # 'h' or 'a'
-    
+
     # OpenPlay, SetPiece, etc.
     situation = models.CharField(max_length=50, null=True)
     """Regular an attempt created from an open-play attack.
@@ -69,8 +74,10 @@ Penalty  The penalty attempt itself, any follow-up shot would be classed as a se
             models.Index(fields=['match', 'minute']),
             models.Index(fields=['player', 'type']),
             models.Index(fields=['team', 'type']),
-            models.Index(fields=['event_id']),  # Meaningful for finding related actions
-            models.Index(fields=['source_id']),  # Index for the original DataFrame id
+            models.Index(fields=['event_id']),
+            # Meaningful for finding related actions
+            # Index for the original DataFrame id
+            models.Index(fields=['source_id']),
         ]
         constraints = [
             models.UniqueConstraint(

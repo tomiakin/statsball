@@ -11,11 +11,12 @@ from ...serializers.base.match import (
 )
 from .base import BaseViewSet
 
+
 class MatchViewSet(BaseViewSet):
     """ViewSet for managing match data."""
     lookup_field = 'match_id'
     lookup_url_kwarg = 'match_id'
-    
+
     def get_serializer_class(self):
         if self.action == 'list':
             return MatchListSerializer
@@ -34,11 +35,13 @@ class MatchViewSet(BaseViewSet):
             queryset = queryset.prefetch_related(
                 Prefetch(
                     'formation_set',
-                    queryset=Formation.objects.select_related('team').order_by('start_minute')
+                    queryset=Formation.objects.select_related(
+                        'team').order_by('start_minute')
                 ),
                 Prefetch(
                     'matchplayer_set',
-                    queryset=MatchPlayer.objects.select_related('player', 'team')
+                    queryset=MatchPlayer.objects.select_related(
+                        'player', 'team')
                 )
             )
 

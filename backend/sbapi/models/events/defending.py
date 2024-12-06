@@ -6,7 +6,7 @@ class DefendingEvent(Event):
     """
     Model representing defensive actions in football/soccer matches.
     Inherits from base Event model.
-    
+
     This model tracks various defensive actions including tackles, interceptions,
     clearances, aerial duels, and defensive errors.
     """
@@ -19,17 +19,17 @@ class DefendingEvent(Event):
     is_interception = models.BooleanField(
         default=False,
         help_text="Quick identifier for interception events. Occurs when a player reads and "
-                 "intercepts an opponent's pass by moving into the line of the intended pass"
+        "intercepts an opponent's pass by moving into the line of the intended pass"
     )
     is_clearance = models.BooleanField(
         default=False,
         help_text="Quick identifier for clearance events. Represents an action where "
-                 "a player attempts to get the ball away from a dangerous zone"
+        "a player attempts to get the ball away from a dangerous zone"
     )
     is_ball_recovery = models.BooleanField(
         default=False,
         help_text="Quick identifier for ball recovery events. Occurs when a player recovers "
-                 "the ball in a situation where neither team has possession"
+        "the ball in a situation where neither team has possession"
     )
 
     # Aerial duels
@@ -124,7 +124,7 @@ class DefendingEvent(Event):
     outfielder_blocked_pass = models.BooleanField(
         default=False,
         help_text="Indicates blocked pass by an outfield player. Similar to interception "
-                 "but with less reading of the pass"
+        "but with less reading of the pass"
     )
     six_yard_block = models.BooleanField(
         default=False,
@@ -143,7 +143,7 @@ class DefendingEvent(Event):
     tackle_won = models.BooleanField(
         default=False,
         help_text="Indicates tackle where the tackler or teammate regains possession, "
-                 "or the ball goes safely out of play"
+        "or the ball goes safely out of play"
     )
 
     class Meta:

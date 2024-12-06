@@ -48,7 +48,7 @@ class MatchPlayer(models.Model):
 
     def __str__(self):
         return f"{self.player.name} ({self.team.name}) - Match {self.match.match_id}"
-    
+
     @property
     def match_date(self):
         return self.match.start_datetime.date()

@@ -41,7 +41,8 @@ class PlayerMatchPassingView(BaseStatsBombView):
 
         except Exception as e:
             logger.error(f"Error in PlayerMatchPassingView: {str(e)}")
-            return self.handle_error(e, f"Failed to fetch passing data for player {player_name}")
+            return self.handle_error(
+                e, f"Failed to fetch passing data for player {player_name}")
 
     def _process_passing_data(self, player_passes):
         """Process raw passing data"""
